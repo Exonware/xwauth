@@ -14,7 +14,7 @@
 # =============================================================================
 
 # eXonware Ecosystem Dependencies
-# Source size (src/*): ~961.1 KB
+# Source size (src/*): ~963.1 KB
 exonware-xwsystem          # Foundation library (security, crypto, HTTP client, XWObject)
 exonware-xwstorage        # Data storage (user persistence)
 exonware-xwaction          # Workflow automation (auth-aware actions)
