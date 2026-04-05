@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Interop lab: synthetic SAML 2.0 metadata skeleton; all identifiers and cert material redacted (GUIDE_12 / ROADMAP #8). -->
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+                  entityID="urn:REDACTED:interop-lab-idp-entity">
+  <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Data>
+          <X509Certificate>REDACTED_BASE64_CERT_PLACEHOLDER_NOT_REAL</X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </KeyDescriptor>
+    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                         Location="https://REDACTED.idp.example/sso/saml"/>
+  </IDPSSODescriptor>
+</EntityDescriptor>

@@ -1,0 +1,37 @@
+name: Federation interop smoke
+
+on:
+  pull_request:
+    paths:
+      - "src/exonware/xwauth/federation/**"
+      - "src/exonware/xwauth/config/config.py"
+      - "src/exonware/xwauth/core/saml.py"
+      - "src/exonware/xwauth/oauth_http/**"
+      - "src/exonware/xwauth/facade.py"
+      - "src/exonware/xwauth/providers/**"
+      - "docs/federation/INTEROP_MATRIX.md"
+      - "tests/1.unit/federation_tests/**"
+      - "tests/1.unit/core_tests/test_saml_manager.py"
+      - ".github/workflows/federation-interop-smoke.yml"
+  push:
+    branches: [main, develop]
+
+jobs:
+  federation-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install and test (SAML + WebAuthn/MFA interop unit)
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio
+          pip install -e ".[saml]"
+          pip install "cryptography>=41.0.0" "PyJWT>=2.8.0"
+          pytest tests/1.unit/federation_tests/ tests/1.unit/core_tests/test_saml_manager.py \
+            -q --tb=short

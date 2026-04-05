@@ -8,13 +8,13 @@ Session data model that extends xwsystem.shared.XWObject for consistent
 identity, timestamps, and serialization across the eXonware ecosystem.
 
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
 Version: 0.0.1.1
 Generation Date: 20-Dec-2025
 """
 
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime, timedelta
 
 from exonware.xwsystem import get_logger
@@ -41,14 +41,14 @@ class Session(XWObject):
     
     def __init__(
         self,
-        id: Optional[str] = None,
+        id: str | None = None,
         user_id: str = "",
-        expires_at: Optional[datetime] = None,
+        expires_at: datetime | None = None,
         status: SessionStatus = SessionStatus.ACTIVE,
-        csrf_token: Optional[str] = None,
-        attributes: Optional[dict[str, Any]] = None,
-        created_at: Optional[datetime] = None,
-        last_accessed_at: Optional[datetime] = None,
+        csrf_token: str | None = None,
+        attributes: dict[str, Any] | None = None,
+        created_at: datetime | None = None,
+        last_accessed_at: datetime | None = None,
     ):
         """
         Initialize session.
@@ -121,12 +121,12 @@ class Session(XWObject):
         self._update_timestamp()
     
     @property
-    def csrf_token(self) -> Optional[str]:
+    def csrf_token(self) -> str | None:
         """Get CSRF token."""
         return self._csrf_token
     
     @csrf_token.setter
-    def csrf_token(self, value: Optional[str]) -> None:
+    def csrf_token(self, value: str | None) -> None:
         """Set CSRF token."""
         self._csrf_token = value
         self._update_timestamp()

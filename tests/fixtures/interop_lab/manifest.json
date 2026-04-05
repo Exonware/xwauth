@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "contracts": [
+    {
+      "id": "oidc-token-response-shape-v1",
+      "protocol": "oidc",
+      "idp": "generic_rfc6749",
+      "artifact": "samples/oidc_token_response.redacted.json",
+      "notes": "RFC 6749 token success body; redacted tokens"
+    },
+    {
+      "id": "scim-users-list-shape-v1",
+      "protocol": "scim",
+      "idp": "generic_rfc7644",
+      "artifact": "samples/scim_users_list.redacted.json",
+      "notes": "ListResponse envelope + one redacted User resource"
+    },
+    {
+      "id": "saml-idp-metadata-shape-v1",
+      "protocol": "saml",
+      "idp": "generic_saml2_metadata",
+      "artifact": "samples/saml_idp_metadata.redacted.xml",
+      "notes": "IdP EntityDescriptor skeleton; redacted entityID, cert, SSO URL"
+    }
+  ]
+}

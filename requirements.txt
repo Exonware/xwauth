@@ -1,0 +1,131 @@
+# xwauth Requirements
+# Company: eXonware.com
+# Author: eXonware Backend Team
+# Email: connect@exonware.com
+#
+# Canonical dependency source: pyproject.toml ([project] and optional-dependencies).
+# Prefer: pip install -e ".[dev]" for development (pytest, formatters, xwsystem dev tools).
+# This file is a convenience aggregate; keep in sync when changing runtime deps.
+#
+# Compatible with Python 3.12+
+
+# =============================================================================
+# CORE DEPENDENCIES
+# =============================================================================
+
+# eXonware Ecosystem Dependencies
+# Source size (src/*): ~961.1 KB
+exonware-xwsystem          # Foundation library (security, crypto, HTTP client, XWObject)
+exonware-xwstorage        # Data storage (user persistence)
+exonware-xwaction          # Workflow automation (auth-aware actions)
+exonware-xwschema          # Schema validation (user data validation)
+
+# =============================================================================
+# OAUTH 2.0 / OPENID CONNECT DEPENDENCIES
+# =============================================================================
+
+# JWT Token Handling
+PyJWT>=2.8.0                      # JWT encoding/decoding
+cryptography>=41.0.0              # Cryptographic functions (token signing)
+
+# OAuth 2.0 / OpenID Connect
+authlib>=1.2.0                    # OAuth 2.0 client library
+oauthlib>=3.2.2                   # OAuth 2.0 implementation
+
+# WebAuthn/Passkeys (FIDO2)
+webauthn>=2.0.0                   # WebAuthn implementation (python-webauthn)
+
+# =============================================================================
+# OAUTH PROVIDER DEPENDENCIES (Optional - installed via [full] extra)
+# =============================================================================
+
+# Google OAuth
+# google-auth>=2.23.0              # Google authentication
+# google-auth-oauthlib>=1.1.0     # Google OAuth flow
+
+# GitHub OAuth
+# requests-oauthlib>=1.3.1         # OAuth for requests (GitHub, etc.)
+
+# Microsoft OAuth
+# msal>=1.24.0                     # Microsoft Authentication Library
+
+# =============================================================================
+# WEB API SERVER DEPENDENCIES (Optional - for xwauth-server)
+# =============================================================================
+
+# FastAPI (for OAuth endpoints)
+# fastapi>=0.104.0                 # FastAPI framework
+# uvicorn>=0.24.0                  # ASGI server
+# python-multipart>=0.0.6           # Form data parsing
+
+# =============================================================================
+# SESSION MANAGEMENT DEPENDENCIES
+# =============================================================================
+
+# Session Storage
+# redis>=5.0.0                     # Redis for session storage (optional)
+# itsdangerous>=2.1.2              # Secure session signing
+
+# =============================================================================
+# DEVELOPMENT AND TESTING DEPENDENCIES
+# =============================================================================
+
+# Testing Framework
+pytest>=7.0.0                     # Testing framework
+pytest-cov>=4.0.0                 # Coverage reporting
+pytest-asyncio>=0.21.0            # Async testing support
+exonware-xwauth-api               # API transport package that depends on core `exonware-xwauth`
+
+# Code Quality
+black>=23.0.0                     # Code formatting
+isort>=5.12.0                     # Import sorting
+flake8>=6.1.0                     # Linting
+
+# Type Checking
+mypy>=1.0.0                       # Static type checking
+
+# =============================================================================
+# NOTES
+# =============================================================================
+#
+# xwauth is a three-tier platform:
+# 1. Backend Library (exonware-xwauth) - OAuth 2.0 implementation
+# 2. Web API Server (xwauth-server) - OAuth endpoints, user management
+# 3. Frontend UI (xwauth-ui) - React/TypeScript auth components
+#
+# This requirements.txt covers the backend library.
+# Server and UI have separate requirements files.
+#
+# Installation modes (see pyproject.toml):
+# - Default: core runtime deps
+# - [lazy]: xwlazy + xwsystem[lazy]
+# - [dev]: xwlazy + xwsystem[dev] (local development)
+# - [api]: xwaction + fastapi
+# - [full]: xwsystem[full] + auth/oauth/WebAuthn-related libs
+#
+# Python Version: >=3.12
+# Platform: Windows, Linux, macOS
+#
+# Security: All cryptographic operations use vetted libraries (cryptography, PyJWT)
+requests
+aiohttp
+pyotp
+trio
+h2
+socksio
+rnc2rng
+rpython
+lxml
+signxml>=4.0.0
+tomli
+numpy
+scikit-learn
+cython
+lz4
+uarray
+pandas
+pyarrow
+cloudpickle
+pytz
+numexpr
+bottleneck

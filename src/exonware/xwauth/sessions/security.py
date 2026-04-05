@@ -7,13 +7,12 @@ Session Security
 CSRF protection and session security using xwsystem crypto.
 
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.0
+Version: 0.0.1.1
 Generation Date: 20-Dec-2025
 """
 
-from typing import Optional
 import base64
 
 from exonware.xwsystem import get_logger

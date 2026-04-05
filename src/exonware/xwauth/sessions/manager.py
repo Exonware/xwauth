@@ -7,13 +7,13 @@ Session Manager
 Session lifecycle management with CSRF protection and concurrent session limits.
 
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.0
+Version: 0.0.1.1
 Generation Date: 20-Dec-2025
 """
 
-from typing import Any, Optional
+from typing import Any
 from datetime import datetime, timedelta
 import uuid
 
@@ -56,7 +56,7 @@ class SessionManager(ABaseSessionManager, ISessionManager):
     async def create_session(
         self,
         user_id: str,
-        expires_in: Optional[int] = None
+        expires_in: int | None = None
     ) -> str:
         """
         Create new session.
@@ -99,7 +99,7 @@ class SessionManager(ABaseSessionManager, ISessionManager):
         logger.debug(f"Created session: {session_id} for user: {user_id}")
         return session_id
     
-    async def get_session(self, session_id: str) -> Optional[dict[str, Any]]:
+    async def get_session(self, session_id: str) -> dict[str, Any] | None:
         """
         Get session data.
         
@@ -209,10 +209,10 @@ class SessionManager(ABaseSessionManager, ISessionManager):
     async def create_session_with_metadata(
         self,
         user_id: str,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        device_info: Optional[dict[str, Any]] = None,
-        expires_in: Optional[int] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        device_info: dict[str, Any] | None = None,
+        expires_in: int | None = None,
     ) -> str:
         """
         Create new session with metadata.

@@ -7,21 +7,18 @@ Session Storage
 Session storage via IStorageProvider interface.
 
 Company: eXonware.com
-Author: Eng. Muhammad AlShehri
+Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.0
+Version: 0.0.1.1
 Generation Date: 20-Dec-2025
 """
 
-from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from exonware.xwsystem import get_logger
 
 from ..storage.interface import IStorageProvider
-from ..errors import XWSessionError, XWSessionExpiredError
 from .session import Session
-from .security import SessionSecurity
 
 logger = get_logger(__name__)
 
@@ -69,7 +66,7 @@ class SessionStorage:
         await self._storage.save_session(mock_session)
         logger.debug(f"Saved session: {session.id}")
     
-    async def get_session(self, session_id: str) -> Optional[Session]:
+    async def get_session(self, session_id: str) -> Session | None:
         """
         Get session from storage.
         
@@ -137,7 +134,7 @@ class SessionStorage:
         
         return sessions
     
-    async def _convert_storage_to_session(self, session_obj) -> Optional[Session]:
+    async def _convert_storage_to_session(self, session_obj) -> Session | None:
         """Convert storage session object to Session model."""
         from ..defs import SessionStatus
         
