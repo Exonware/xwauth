@@ -17,32 +17,6 @@ from pathlib import Path
 # breaks native stacks (lxml/signxml/SAML). Skip lazy auto-registration for this pytest process.
 os.environ.setdefault("XWSTACK_SKIP_XWLAZY_INIT", "1")
 
-# Add src to path for testing
-src_path = Path(__file__).parent.parent / "src"
-if str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
-
-# Add sibling package src roots when available (monorepo local runs).
-# Keep this tuple aligned with ``xwauth-api/tests/conftest.py`` (GUIDE_51).
-repo_root = Path(__file__).resolve().parents[2]
-for sibling_src in (
-    repo_root / "xwnode" / "src",
-    repo_root / "xwdata" / "src",
-    repo_root / "xwschema" / "src",
-    repo_root / "xwentity" / "src",
-    repo_root / "xwbase" / "src",
-    repo_root / "xwaction" / "src",
-    repo_root / "xwlogin" / "src",
-    repo_root / "xwapi" / "src",
-    repo_root / "xwjson" / "src",
-    repo_root / "xwstorage" / "src",
-    repo_root / "xwauth-api" / "src",
-    repo_root / "xwsystem" / "src",
-):
-    if sibling_src.exists() and str(sibling_src) not in sys.path:
-        sys.path.insert(0, str(sibling_src))
-
-
 def _patch_fastapi_middleware_stack_for_starlette() -> None:
     """FastAPI 0.104 unpacks Middleware as (cls, opts); Starlette 0.52+ uses (cls, args, kwargs)."""
     try:

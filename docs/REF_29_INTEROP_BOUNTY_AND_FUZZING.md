@@ -8,7 +8,7 @@
 
 ## Status
 
-Policy ``status`` is **`draft`** until any paid bounty is announced. **Coordinated disclosure is always welcome** via [SECURITY.md](../SECURITY.md).
+Policy ``status`` is **`draft`** until any paid bounty is announced. **Coordinated disclosure is always welcome** via [SECURITY.md](SECURITY.md).
 
 ---
 

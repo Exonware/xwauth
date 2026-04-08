@@ -16,7 +16,7 @@ Templates and checklists are **technical prompts** for your counsel and DPO. The
 
 1. Walk `compliance_pack_checklist()` with security and privacy owners; tick items in your GRC tool.  
 2. Copy `compliance_evidence_template()` fields into your customer portal or PDF packet; fill **controller/processor** names, regions, and links.  
-3. Cross-link **data residency** ([REF_31_DATA_RESIDENCY.md](REF_31_DATA_RESIDENCY.md)) and **security** ([SECURITY.md](../SECURITY.md), [SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md)).
+3. Cross-link **data residency** ([REF_31_DATA_RESIDENCY.md](REF_31_DATA_RESIDENCY.md)) and **security** ([SECURITY.md](SECURITY.md), [SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md)).
 
 ---
 

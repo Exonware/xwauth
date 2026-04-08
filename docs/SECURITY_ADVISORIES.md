@@ -2,7 +2,7 @@
 
 **Maintainer:** eXonware Backend Team · **Contact:** connect@exonware.com
 
-This index lists **published** security notices for **exonware-xwauth**, **exonware-xwlogin**, and related packages. When no CVE-style entry exists yet, coordinated disclosure is handled via email (see root [SECURITY.md](../SECURITY.md)).
+This index lists **published** security notices for **exonware-xwauth**, **exonware-xwlogin**, and related packages. When no CVE-style entry exists yet, coordinated disclosure is handled via email (see [SECURITY.md](SECURITY.md)).
 
 | ID / date | Affected | Severity | Summary | Fixed in |
 |-----------|----------|----------|---------|----------|
@@ -10,7 +10,7 @@ This index lists **published** security notices for **exonware-xwauth**, **exonw
 
 ## Process
 
-1. Report privately per [SECURITY.md](../SECURITY.md).  
+1. Report privately per [SECURITY.md](SECURITY.md).  
 2. After a fix ships, add a row above with version range and upgrade guidance.  
 3. Link release notes or GitHub Security Advisory when used.
 

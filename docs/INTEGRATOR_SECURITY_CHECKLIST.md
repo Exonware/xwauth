@@ -1,7 +1,7 @@
 # Integrator security checklist
 
 **Audience:** Teams deploying **xwauth** (connector), **xwlogin** (login provider), and **xwauth-api** (reference AS).  
-**Companion:** Root [SECURITY.md](../SECURITY.md) (reporting policy) · [SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md).
+**Companion:** [SECURITY.md](SECURITY.md) (reporting policy) · [SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md).
 
 Use this before production. It does not replace your own threat modeling.
 

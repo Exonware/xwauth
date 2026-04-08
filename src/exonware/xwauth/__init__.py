@@ -5,7 +5,7 @@ XWAuth — **OAuth 2.0 / OIDC connector** for the Exonware stack: authorization 
 token and session contracts, federation core, storage hooks, and policy integration.
 
 **Identity providers**, WebAuthn/MFA, and OAuth **RP clients** live in **exonware-xwlogin**
-(`exonware.xwlogin`). Install `exonware-xwauth[login]` or `exonware-xwlogin` for the full
+(`exonware.xwlogin`). Install `exonware-xwauth[xwlogin]` or `exonware-xwlogin` for the full
 login + connector story. Those symbols are also re-exported from this package via **lazy**
 imports (PEP 562) so `import exonware.xwauth` works without xwlogin until you access a
 login-only name. See `xwauth/.references/` for competitive positioning notes. When **exonware-xwlogin**
@@ -123,7 +123,7 @@ _LAZY_XWLOGIN: dict[str, tuple[str, str]] = {
 }
 
 _LOGIN_INSTALL_HINT = (
-    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[login]') for WebAuthn/MFA helpers "
+    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for WebAuthn/MFA helpers "
     "and OAuth RP clients."
 )
 

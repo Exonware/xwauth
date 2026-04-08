@@ -31,7 +31,7 @@ _LAZY: dict[str, tuple[str, str]] = {
 }
 
 _INSTALL_HINT = (
-    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[login]') for OAuth RP / agent clients."
+    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for OAuth RP / agent clients."
 )
 
 

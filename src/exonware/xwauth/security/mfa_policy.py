@@ -17,6 +17,6 @@ bind_lazy_exports(
         "step_up_required_aal2",
     ),
     install_hint=(
-        "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[login]') for MFA / WebAuthn policy helpers."
+        "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for MFA / WebAuthn policy helpers."
     ),
 )

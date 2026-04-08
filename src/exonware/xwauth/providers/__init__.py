@@ -39,7 +39,7 @@ def __getattr__(name: str) -> Any:
     except ImportError as e:
         raise AttributeError(
             f"module {__name__!r} has no attribute {name!r}. "
-            "Install optional dependency exonware-xwlogin (pip install exonware-xwauth[login]) "
+            "Install optional dependency exonware-xwlogin (pip install exonware-xwauth[xwlogin]) "
             "for concrete identity providers, or import from exonware.xwlogin.providers."
         ) from e
     if hasattr(_lp, name):

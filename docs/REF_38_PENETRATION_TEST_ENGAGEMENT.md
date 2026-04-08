@@ -15,7 +15,7 @@
 
 ## Publication
 
-After redaction and approval, place the executive summary under [logs/reviews/](logs/reviews/) (or your public site) and link it from [SECURITY.md](../SECURITY.md) if policy allows.
+After redaction and approval, place the executive summary under [logs/reviews/](logs/reviews/) (or your public site) and link it from [SECURITY.md](SECURITY.md) if policy allows.
 
 ---
 

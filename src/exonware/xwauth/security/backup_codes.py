@@ -10,6 +10,6 @@ bind_lazy_exports(
     "exonware.xwlogin.security.backup_codes",
     ("generate_backup_codes", "hash_backup_code", "verify_backup_code"),
     install_hint=(
-        "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[login]') for MFA backup-code helpers."
+        "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for MFA backup-code helpers."
     ),
 )

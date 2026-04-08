@@ -6,7 +6,7 @@ Abstract base class for OAuth providers using xwsystem HttpClient.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.2
+Version: 0.0.1.3
 Generation Date: 20-Dec-2025
 """
 
@@ -14,9 +14,10 @@ from typing import Any, Optional
 from abc import abstractmethod
 import base64
 import hashlib
-import json
 from urllib.parse import urlencode, urlparse, parse_qs
 from exonware.xwsystem import get_logger
+from exonware.xwsystem.io.errors import SerializationError
+from exonware.xwsystem.io.serialization.formats.text import json as xw_json
 from exonware.xwsystem.http_client import HttpClient, AsyncHttpClient
 HTTP_CLIENT_AVAILABLE = True
 from ..defs import ProviderType
@@ -82,8 +83,8 @@ class ABaseProvider(_ABaseProvider, IProvider):
         text = str(raw)
         snippet = (text[:500] + ("…" if len(text) > 500 else "")).strip()
         try:
-            data = json.loads(text)
-        except (json.JSONDecodeError, TypeError, ValueError):
+            data = xw_json.loads(text)
+        except (xw_json.JSONDecodeError, SerializationError, TypeError, ValueError):
             return snippet or ""
         if isinstance(data, dict) and data.get("error"):
             err = str(data.get("error", "")).strip()

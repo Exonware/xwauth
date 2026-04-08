@@ -12,7 +12,7 @@
 |-------|------------------------|
 | **OAuth/OIDC AS process** | `xwauth-api` container / Helm chart, discovery, token endpoints (with correct deployment profile). |
 | **Client registry** | `registered_clients` JSON, env-driven; optional Secret mount in Kubernetes. |
-| **Login / IdP glue** | `exonware-xwlogin` handlers and federation when you opt into `[login]` / `[enterprise]`. |
+| **Login / IdP glue** | `exonware-xwlogin` handlers and federation when you opt into `[xwlogin]` / `[enterprise]`. |
 | **Observability hooks** | See [REF_63_AUTH_OBSERVABILITY_CONTRACT.md](REF_63_AUTH_OBSERVABILITY_CONTRACT.md). |
 
 ---

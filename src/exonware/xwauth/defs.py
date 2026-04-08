@@ -5,7 +5,7 @@ Type Definitions and Enums
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.2
+Version: 0.0.1.3
 Generation Date: 08-Apr-2026
 """
 
@@ -70,29 +70,35 @@ class SessionStatus(str, Enum):
     REVOKED = "revoked"
     TERMINATED = "terminated"
 # ==============================================================================
-# USER STATUS
+# USER STATUS (canonical: exonware.xwlogin.foundation.defs — REF_41 §7)
 # ==============================================================================
+try:
+    from exonware.xwlogin.foundation.defs import UserStatus
+except ImportError:
 
+    class UserStatus(str, Enum):
+        """User account status (fallback when exonware-xwlogin is not installed)."""
 
-class UserStatus(str, Enum):
-    """User account status."""
-    ACTIVE = "active"
-    PENDING = "pending"
-    SUSPENDED = "suspended"
-    DISABLED = "disabled"
-    DELETED = "deleted"
+        ACTIVE = "active"
+        PENDING = "pending"
+        SUSPENDED = "suspended"
+        DISABLED = "disabled"
+        DELETED = "deleted"
 # ==============================================================================
-# MFA METHODS
+# MFA METHODS (canonical: exonware.xwlogin.foundation.defs — REF_41 §7)
 # ==============================================================================
+try:
+    from exonware.xwlogin.foundation.defs import MFAMethod
+except ImportError:
 
+    class MFAMethod(str, Enum):
+        """Multi-factor authentication methods (fallback when exonware-xwlogin is not installed)."""
 
-class MFAMethod(str, Enum):
-    """Multi-factor authentication methods."""
-    TOTP = "totp"
-    SMS = "sms"
-    EMAIL = "email"
-    WEBAUTHN = "webauthn"
-    BACKUP_CODE = "backup_code"
+        TOTP = "totp"
+        SMS = "sms"
+        EMAIL = "email"
+        WEBAUTHN = "webauthn"
+        BACKUP_CODE = "backup_code"
 # ==============================================================================
 # PROVIDER TYPES
 # ==============================================================================

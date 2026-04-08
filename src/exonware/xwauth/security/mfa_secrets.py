@@ -10,6 +10,6 @@ bind_lazy_exports(
     "exonware.xwlogin.security.mfa_secrets",
     ("decrypt_totp_secret", "derive_mfa_encryption_key", "encrypt_totp_secret"),
     install_hint=(
-        "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[login]') for TOTP envelope encryption."
+        "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for TOTP envelope encryption."
     ),
 )

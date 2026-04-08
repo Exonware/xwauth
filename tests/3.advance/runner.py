@@ -10,19 +10,31 @@ Generation Date: 07-Jan-2025
 """
 
 import sys
+import os
 from pathlib import Path
 # ⚠️ CRITICAL: Configure UTF-8 encoding for Windows console (GUIDE_TEST.md compliance)
 from exonware.xwsystem.console.cli import ensure_utf8_console
 ensure_utf8_console()
-# Add src to Python path
-src_path = Path(__file__).parent.parent.parent / "src"
-sys.path.insert(0, str(src_path))
 # Import reusable utilities
+
+def _package_root() -> Path:
+    """Folder with pyproject.toml + src/ (any tests/**/runner.py depth)."""
+    p = Path(__file__).resolve().parent
+    while p != p.parent:
+        if (p / "pyproject.toml").is_file() and (p / "src").is_dir():
+            return p
+        p = p.parent
+    raise RuntimeError("Could not locate package root from " + str(Path(__file__)))
+
+
+_PKG_ROOT = _package_root()
+
 from exonware.xwsystem.utils.test_runner import TestRunner
 
 
 def main():
     """Run advance tests."""
+    os.chdir(_PKG_ROOT)
     test_dir = Path(__file__).parent
     # Parse arguments for specific advance test categories
     args = sys.argv[1:]
@@ -42,6 +54,7 @@ def main():
         layer_name="3.advance",
         description="Advance Tests - Production Excellence Validation",
         test_dir=test_dir,
+        pytest_cwd=_PKG_ROOT,
         markers=markers
     )
     return runner.run()

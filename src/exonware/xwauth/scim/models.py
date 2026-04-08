@@ -8,8 +8,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from hashlib import sha256
-import json
 from typing import Any
+
+from exonware.xwsystem.io.serialization.formats.text import json as xw_json
 
 
 SCIM_LIST_RESPONSE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse"
@@ -25,7 +26,7 @@ def utc_now_iso() -> str:
 
 def compute_etag(payload: dict[str, Any]) -> str:
     """Compute stable weak ETag for a SCIM payload."""
-    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    canonical = xw_json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
     digest = sha256(canonical.encode("utf-8")).hexdigest()
     return f'W/"{digest}"'
 

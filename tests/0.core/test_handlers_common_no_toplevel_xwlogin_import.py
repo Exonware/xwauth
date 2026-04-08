@@ -29,7 +29,7 @@ def _module_level_xwlogin_imports(py_path: Path) -> list[tuple[int, str]]:
 
 @pytest.mark.xwauth_core
 def test_handlers_common_lazy_authenticator_factories_resolve_with_xwlogin() -> None:
-    """Monorepo / [login] env: first call loads xwlogin and returns real authenticator types (GUIDE_51)."""
+    """Monorepo / [xwlogin] env: first call loads xwlogin and returns real authenticator types (GUIDE_51)."""
     from types import SimpleNamespace
 
     from exonware.xwauth.handlers import _common as handler_common

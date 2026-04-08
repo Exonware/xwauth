@@ -26,11 +26,11 @@
 | 17 | Air-gapped / offline install story | Done* | Gov / regulated | *`ops/airgap_deployment.py`, tests `test_airgap_deployment.py`, [REF_30_AIRGAP_DEPLOYMENT.md](REF_30_AIRGAP_DEPLOYMENT.md) |
 | 18 | Multi-region auth: JWKS rotation, validation, revocation semantics | Done* | Scale | *`ops/multi_region_auth.py`, `test_multi_region_auth.py`, [REF_32_MULTI_REGION_AUTH.md](REF_32_MULTI_REGION_AUTH.md) |
 | 19 | TCO one-pager vs Keycloak / Ory stack | Done* | Sales / adoption | *Appendix A narrative + [REF_37_TCO_BENCHMARK_EVIDENCE.md](REF_37_TCO_BENCHMARK_EVIDENCE.md): `validate_microbench_output`, `tco_benchmark_publish_checklist`; commit measured JSON under `docs/logs/benchmarks/` when publishing* |
-| 20 | Public interop bounty + fuzzing budget for OAuth parsers/endpoints | Done* | Scrutiny | *Draft policy:* `ops/research_program.py`, tests `test_research_program.py`, [REF_29](REF_29_INTEROP_BOUNTY_AND_FUZZING.md), [SECURITY.md](../SECURITY.md); **paid** bounty TBD |
+| 20 | Public interop bounty + fuzzing budget for OAuth parsers/endpoints | Done* | Scrutiny | *Draft policy:* `ops/research_program.py`, tests `test_research_program.py`, [REF_29](REF_29_INTEROP_BOUNTY_AND_FUZZING.md), [SECURITY.md](SECURITY.md); **paid** bounty TBD |
 
 ### Groundwork shipped (this iteration)
 
-- [SECURITY.md](../SECURITY.md) — private reporting channel (GitHub-standard).
+- [SECURITY.md](SECURITY.md) — private reporting channel (GitHub-standard).
 - [SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md) — triage levels, EXONWARE-SA id scheme, advisory log scaffold.
 - [REF_26_INTEGRATOR_SECURITY_CHECKLIST.md](REF_26_INTEGRATOR_SECURITY_CHECKLIST.md) — integrator release gate (tokens, OAuth, federation, MFA, ops).
 - **Benchmark harness (REF_25 #6):** `exonware.xwauth.bench` (JWT microbench) + `exonware.xwauth_api.bench` (token `TestClient` loop) + `xwauth-api/scripts/http_bench.py` (monorepo path bootstrap); tests under each repo’s `tests/1.unit/bench_tests/`; CI: `xwauth-api/.github/workflows/http-bench.yml`.

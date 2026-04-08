@@ -1,4 +1,4 @@
-# Source size (src/*): ~963.1 KB
+# Source size (src/*): ~966.9 KB
 [build-system]
 requires = [
     "hatchling",
@@ -29,35 +29,21 @@ dependencies = [
 ]
 
 [project.license]
-text = "MIT"
+text = "Apache-2.0"
 
 [project.optional-dependencies]
+# First-party XW libs composed by this package (excludes exonware-xwsystem; see lazy/full).
+xw = [
+    "exonware-xwauth[xw]",
+]
 lazy = [
     "exonware-xwauth[lazy]",
 ]
-login = [
-    "exonware-xwauth[login]",
-]
-storage = [
-    "exonware-xwauth[storage]",
+full = [
+    "exonware-xwauth[full]",
 ]
 dev = [
     "exonware-xwauth[dev]",
-]
-api = [
-    "exonware-xwauth[api]",
-]
-saml = [
-    "exonware-xwauth[saml]",
-]
-redis = [
-    "exonware-xwauth[redis]",
-]
-enterprise = [
-    "exonware-xwauth[enterprise]",
-]
-full = [
-    "exonware-xwauth[full]",
 ]
 
 [project.urls]
@@ -98,7 +84,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
-    "/SECURITY.md",
+    "/docs/SECURITY.md",
     "/docs/SECURITY_ADVISORIES.md",
     "/docs/INTEGRATOR_SECURITY_CHECKLIST.md",
     "/docs/GUIDE_03_HA_UPGRADE_RUNBOOK.md",

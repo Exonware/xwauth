@@ -6,7 +6,7 @@ import importlib
 from typing import Any, Sequence
 
 _DEFAULT_HINT = (
-    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[login]') for login-provider implementations."
+    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for login-provider implementations."
 )
 
 

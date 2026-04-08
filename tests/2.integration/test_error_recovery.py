@@ -10,12 +10,6 @@ Version: 0.0.1.0
 Generation Date: 20-Dec-2025
 """
 
-import sys
-from pathlib import Path
-# Add src to path for testing
-src_path = Path(__file__).parent.parent.parent / "src"
-if str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
 import pytest
 from exonware.xwauth import XWAuth
 from exonware.xwauth.config.config import XWAuthConfig

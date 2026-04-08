@@ -37,7 +37,7 @@ from exonware.xwauth.api_paths import (
 
 _LOGIN_FACTORY_ERR = (
     "First-party authenticator factories require exonware-xwlogin; install "
-    "exonware-xwauth[login] or exonware-xwlogin[handlers]."
+    "exonware-xwauth[xwlogin] or exonware-xwlogin[handlers]."
 )
 
 

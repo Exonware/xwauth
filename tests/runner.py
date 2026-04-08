@@ -13,13 +13,12 @@ import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
-# ⚠️ CRITICAL: Configure UTF-8 encoding for Windows console (GUIDE_TEST.md compliance)
+
 from exonware.xwsystem.console.cli import ensure_utf8_console
+
 ensure_utf8_console()
-# Add src to Python path for testing
+
 test_dir = Path(__file__).parent
-src_path = test_dir.parent / "src"
-sys.path.insert(0, str(src_path))
 # Import reusable utilities
 from exonware.xwsystem.utils.test_runner import (
     DualOutput,
@@ -31,7 +30,7 @@ from exonware.xwsystem.utils.test_runner import (
 )
 
 
-def run_sub_runner(runner_path: Path, description: str, output: DualOutput) -> int:
+def run_sub_runner(runner_path: Path, description: str, output: DualOutput, *, pkg_root: Path) -> int:
     """Run a sub-runner and return exit code."""
     separator = "=" * 80
     output.print(f"\n{separator}", f"\n## {description}\n")
@@ -39,7 +38,7 @@ def run_sub_runner(runner_path: Path, description: str, output: DualOutput) -> i
     output.print(f"{separator}\n", "")
     result = subprocess.run(
         [sys.executable, str(runner_path)],
-        cwd=runner_path.parent,
+        cwd=str(pkg_root),
         capture_output=True,
         text=True,
         encoding='utf-8',
@@ -58,8 +57,9 @@ def run_sub_runner(runner_path: Path, description: str, output: DualOutput) -> i
 
 def main():
     """Main test runner function following GUIDE_TEST.md."""
+    pkg_root = test_dir.parent
     # Setup output logger
-    reports_dir = test_dir.parent / "docs" / "tests"
+    reports_dir = pkg_root / "docs" / "tests"
     reports_dir.mkdir(parents=True, exist_ok=True)
     timestamp = timestamp_for_filename()
     output_file = reports_dir / f"TEST_{timestamp}_SUMMARY.md"
@@ -82,23 +82,26 @@ def main():
     # Determine which tests to run
     if "--core" in args:
         if core_runner.exists():
-            exit_codes.append(run_sub_runner(core_runner, "Core Tests", output))
+            exit_codes.append(run_sub_runner(core_runner, "Core Tests", output, pkg_root=pkg_root))
     elif "--unit" in args:
         if unit_runner.exists():
-            exit_codes.append(run_sub_runner(unit_runner, "Unit Tests", output))
+            exit_codes.append(run_sub_runner(unit_runner, "Unit Tests", output, pkg_root=pkg_root))
     elif "--integration" in args:
         if integration_runner.exists():
-            exit_codes.append(run_sub_runner(integration_runner, "Integration Tests", output))
+            exit_codes.append(run_sub_runner(integration_runner, "Integration Tests", output, pkg_root=pkg_root))
     elif "--advance" in args:
         if advance_runner.exists():
-            exit_codes.append(run_sub_runner(advance_runner, "Advance Tests", output))
+            exit_codes.append(run_sub_runner(advance_runner, "Advance Tests", output, pkg_root=pkg_root))
         else:
             msg = "\n⚠️ Advance tests not available (requires v1.0.0)"
             output.print(msg, f"\n> {msg}")
     elif "--security" in args or "--performance" in args or "--usability" in args or "--maintainability" in args or "--extensibility" in args:
         # Forward to advance runner if exists
         if advance_runner.exists():
-            result = subprocess.run([sys.executable, str(advance_runner)] + args)
+            result = subprocess.run(
+                [sys.executable, str(advance_runner)] + args,
+                cwd=str(pkg_root),
+            )
             exit_codes.append(result.returncode)
         else:
             msg = "\n⚠️ Advance tests not available (requires v1.0.0)"
@@ -112,16 +115,18 @@ def main():
         output.print("", "")
         # Core tests
         if core_runner.exists():
-            exit_codes.append(run_sub_runner(core_runner, "Layer 0: Core Tests", output))
+            exit_codes.append(run_sub_runner(core_runner, "Layer 0: Core Tests", output, pkg_root=pkg_root))
         # Unit tests
         if unit_runner.exists():
-            exit_codes.append(run_sub_runner(unit_runner, "Layer 1: Unit Tests", output))
+            exit_codes.append(run_sub_runner(unit_runner, "Layer 1: Unit Tests", output, pkg_root=pkg_root))
         # Integration tests
         if integration_runner.exists():
-            exit_codes.append(run_sub_runner(integration_runner, "Layer 2: Integration Tests", output))
+            exit_codes.append(
+                run_sub_runner(integration_runner, "Layer 2: Integration Tests", output, pkg_root=pkg_root)
+            )
         # Advance tests (if available)
         if advance_runner.exists():
-            exit_codes.append(run_sub_runner(advance_runner, "Layer 3: Advance Tests", output))
+            exit_codes.append(run_sub_runner(advance_runner, "Layer 3: Advance Tests", output, pkg_root=pkg_root))
     # Print summary
     summary_header = f"\n{'='*80}"
     output.print(summary_header, f"\n---\n\n## 📈 Test Execution Summary")

@@ -6,15 +6,16 @@ Validate interop_lab manifest and artifact paths (GUIDE_12 / ROADMAP #8).
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
+
+from exonware.xwsystem.io.serialization.formats.text import json as xw_json
 
 _MANIFEST = Path(__file__).resolve().parents[2] / "fixtures" / "interop_lab" / "manifest.json"
 
 
 def test_interop_manifest_schema_and_artifacts() -> None:
     assert _MANIFEST.is_file(), f"Missing manifest: {_MANIFEST}"
-    data = json.loads(_MANIFEST.read_text(encoding="utf-8"))
+    data = xw_json.loads(_MANIFEST.read_text(encoding="utf-8"))
     assert data.get("schema_version") == "1.0"
     contracts = data.get("contracts")
     assert isinstance(contracts, list)
@@ -31,7 +32,7 @@ def test_interop_manifest_schema_and_artifacts() -> None:
 
 def _load_contract_artifact(base: Path, rel: str) -> dict:
     path = (base / rel).resolve()
-    return json.loads(path.read_text(encoding="utf-8"))
+    return xw_json.loads(path.read_text(encoding="utf-8"))
 
 
 def test_redacted_oidc_token_fixture_shape() -> None:

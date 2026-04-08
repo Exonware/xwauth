@@ -20,14 +20,14 @@ We aim to acknowledge receipt within **5 business days** and coordinate disclosu
 
 ## Advisories
 
-Published security notices and identifiers are tracked in **[docs/SECURITY_ADVISORIES.md](docs/SECURITY_ADVISORIES.md)**.
+Published security notices and identifiers are tracked in **[SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md)**.
 
 ## Deploying the stack (integrators)
 
-Production-oriented checklist (tokens, clients, TLS, storage): **[docs/INTEGRATOR_SECURITY_CHECKLIST.md](docs/INTEGRATOR_SECURITY_CHECKLIST.md)**.
+Production-oriented checklist (tokens, clients, TLS, storage): **[INTEGRATOR_SECURITY_CHECKLIST.md](INTEGRATOR_SECURITY_CHECKLIST.md)**.
 
 ## Interop scope & fuzzing (draft program)
 
-Technical **in-scope / out-of-scope** lists and fuzzing target hints (machine-readable, versioned) live in **`exonware.xwauth.ops.research_program`** and are documented in **[docs/REF_29_INTEROP_BOUNTY_AND_FUZZING.md](docs/REF_29_INTEROP_BOUNTY_AND_FUZZING.md)**.
+Technical **in-scope / out-of-scope** lists and fuzzing target hints (machine-readable, versioned) live in **`exonware.xwauth.ops.research_program`** and are documented in **[REF_29_INTEROP_BOUNTY_AND_FUZZING.md](REF_29_INTEROP_BOUNTY_AND_FUZZING.md)**.
 
-Paid bounty tiers are **not** active while program `status` is `draft`; coordinated disclosure via the email above is still appreciated and may be credited in [docs/SECURITY_ADVISORIES.md](docs/SECURITY_ADVISORIES.md) when applicable.
+Paid bounty tiers are **not** active while program `status` is `draft`; coordinated disclosure via the email above is still appreciated and may be credited in [SECURITY_ADVISORIES.md](SECURITY_ADVISORIES.md) when applicable.

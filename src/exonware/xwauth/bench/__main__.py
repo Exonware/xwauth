@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 
+from exonware.xwsystem.io.serialization.formats.text import json as xw_json
 from exonware.xwauth.bench import run_microbench_suite
 
 
@@ -26,7 +26,7 @@ def main() -> int:
         print(str(e), file=sys.stderr)
         return 2
     if args.json:
-        print(json.dumps(result, indent=2))
+        print(xw_json.dumps(result, indent=2))
         return 0
     it = result["iterations"]
     print(f"xwauth microbench iterations={it}")

@@ -1,4 +1,4 @@
-# Source size (src/*): ~963.1 KB
+# Source size (src/*): ~966.9 KB
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -24,40 +24,58 @@ dependencies = [
   "fastapi>=0.104.0",
   "exonware-xwsystem",
   "exonware-xwaction",
+  "exonware-xwschema",
 ]
 
 [project.license]
-text = "MIT"
+text = "Apache-2.0"
 
 [project.optional-dependencies]
-lazy = ["exonware-xwlazy"]
-login = ["exonware-xwlogin[handlers]"]
-storage = ["exonware-xwstorage"]
+# First-party XW libs composed by this package (excludes exonware-xwsystem; see lazy/full).
+xw = [
+  "exonware-xwaction",
+  "exonware-xwdata",
+  "exonware-xwentity",
+  "exonware-xwjson",
+  "exonware-xwlogin",
+  "exonware-xwmodels",
+  "exonware-xwnode",
+  "exonware-xwquery",
+  "exonware-xwschema",
+  "exonware-xwstorage",
+]
+lazy = [
+  "exonware-xwauth[xw]",
+  "exonware-xwlazy",
+  "exonware-xwsystem[lazy]",
+  "exonware-xwaction[xw]",
+  "exonware-xwschema[xw]",
+]
+full = [
+  "exonware-xwauth[xw]",
+  "httpx>=0.27.0",
+  "signxml>=4.0.0",
+  "lxml>=5.0.0",
+  "exonware-xwlogin[full]",
+  "exonware-xwsystem[full]",
+  "exonware-xwaction[xw]",
+  "exonware-xwschema[xw]",
+  "exonware-xwjson[xw]",
+  "exonware-xwnode[xw]",
+  "exonware-xwdata[xw]",
+  "exonware-xwentity[xw]",
+  "exonware-xwmodels[xw]",
+  "exonware-xwquery[xw]",
+  "exonware-xwstorage[xw]",
+  "redis>=4.0.0",
+]
 # Do not install the unrelated PyPI distribution ``rpython`` in the same env: it shadows ``rply``
 # and breaks ``lxml`` / ``signxml`` (GUIDE_53 root cause).
 dev = [
-  "signxml>=4.0.0",
-  "lxml>=5.0.0",
+  "exonware-xwauth[full]",
   "pytest>=8.0.0",
   "pytest-asyncio>=0.21.0",
   "pytest-cov>=4.0.0",
-]
-api = ["fastapi>=0.104.0"]
-saml = ["signxml>=4.0.0", "lxml>=5.0.0"]
-redis = ["redis>=4.0.0"]
-# Self-hosted AS embedding: SAML + durable storage + login handlers (no forced Redis). See docs/REF_39_EDITION_AND_SKUS.md.
-enterprise = [
-  "signxml>=4.0.0",
-  "lxml>=5.0.0",
-  "exonware-xwlogin[handlers]",
-  "exonware-xwstorage",
-]
-full = [
-  "signxml>=4.0.0",
-  "lxml>=5.0.0",
-  "exonware-xwlogin[handlers]",
-  "exonware-xwstorage",
-  "redis>=4.0.0",
 ]
 
 [project.urls]
@@ -85,7 +103,7 @@ include = [
   "/src",
   "/tests",
   "/README.md",
-  "/SECURITY.md",
+  "/docs/SECURITY.md",
   "/docs/SECURITY_ADVISORIES.md",
   "/docs/INTEGRATOR_SECURITY_CHECKLIST.md",
   "/docs/GUIDE_03_HA_UPGRADE_RUNBOOK.md",

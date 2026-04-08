@@ -1,24 +1,30 @@
 # xwauth
 
-**OAuth 2.0 / OIDC connector** — authorization server primitives, tokens, sessions, federation core, and storage contracts. **Concrete IdPs, WebAuthn/MFA, OAuth RP clients, and FastAPI login route mixins** ship in sibling package **exonware-xwlogin** (`pip install exonware-xwauth[login]` pulls `exonware-xwlogin[handlers]`). Ties to xwentity, xwstorage, xwaction where you wire them. Docs in `docs/`; competitive notes in `.references/`.
+**OAuth 2.0 / OIDC connector** — authorization server primitives, tokens, sessions, federation core, and storage contracts. **Concrete IdPs, WebAuthn/MFA, OAuth RP clients, and FastAPI login route mixins** ship in sibling package **exonware-xwlogin** (`pip install exonware-xwauth[xwlogin]` pulls `exonware-xwlogin[handlers]`). Ties to xwentity, xwstorage, xwaction where you wire them. Docs in `docs/`; competitive notes in `.references/`.
+
+**Target dependency direction (0.x migration):** *xwauth* **consumes** *xwlogin*; *xwlogin* must **not** depend on *xwauth* once foundation types move — see monorepo **[REF_41_DEPENDENCY_DIRECTIONS.md](../.docs/guides/REF_41_DEPENDENCY_DIRECTIONS.md)** (pip cannot cycle both ways until that move completes). **Attachment:** `exonware.xwauth.connectors.login_bridge` documents **in-process** (`load_login_package`) vs **remote** (**xwlogin-api** / HTTP) via `LoginRemoteConfig` (REF_41 §6). For HTTP clients: `pip install exonware-xwauth[login_remote]` (pulls **httpx**).
 
 **Company:** eXonware.com · **Author:** eXonware Backend Team · **Email:** connect@exonware.com  
 
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)](https://exonware.com)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 ---
 
-## Install
+## 📦 Install
 
 ```bash
 pip install exonware-xwauth
 pip install exonware-xwauth[lazy]
 pip install exonware-xwauth[full]
-pip install exonware-xwauth[login]   # exonware-xwlogin (IdPs, clients, FastAPI login mixins)
+pip install exonware-xwauth[xwlogin]   # exonware-xwlogin (IdPs, clients, FastAPI login mixins)
+pip install exonware-xwauth[login_remote]   # httpx — HTTP client to xwlogin-api (REF_41 §6)
+pip install exonware-xwauth[stack]   # xwjson, xwnode, xwdata, xwentity, xwmodels, xwquery — xwschema is core (REF_41 §8)
 pip install "exonware-xwauth[enterprise]"   # SAML + storage + login handlers (self-hosted AS embedding)
 ```
+
+After **`[stack]`**, optional: **`import exonware.xwauth.stack`** at process startup to eagerly import **xwjson** … **xwquery** (REF_41 §8).
 
 SKUs and extras: [docs/REF_39_EDITION_AND_SKUS.md](docs/REF_39_EDITION_AND_SKUS.md).
 
@@ -26,7 +32,7 @@ Optional: `xwauth-server` for OAuth endpoints; see [docs/](docs/) when present.
 
 ---
 
-## Quick start
+## 🚀 Quick start
 
 ```python
 from exonware.xwauth import *
@@ -39,7 +45,7 @@ See [docs/](docs/) for usage, `REF_*`, and GUIDE_01_USAGE when present.
 
 ---
 
-## What you get
+## ✨ What you get
 
 | Area | What's in it |
 |------|----------------|
@@ -50,7 +56,7 @@ See [docs/](docs/) for usage, `REF_*`, and GUIDE_01_USAGE when present.
 
 ---
 
-## Exonware ecosystem advantage
+## 🌐 Exonware ecosystem advantage
 
 XW-Auth is not only a standalone auth package. It is backed by the broader XW stack, so security, transport, storage, and API behavior stay consistent across services.
 You can still use `xwauth` standalone with its core install and your existing stack.
@@ -70,9 +76,9 @@ This ecosystem alignment is the core differentiator: XW-Auth gives OAuth 2.0 fea
 
 ---
 
-## Docs and tests
+## 📖 Docs and tests
 
-- **Security:** [SECURITY.md](SECURITY.md) (report vulnerabilities); [docs/SECURITY_ADVISORIES.md](docs/SECURITY_ADVISORIES.md) (advisory process); [docs/REF_26_INTEGRATOR_SECURITY_CHECKLIST.md](docs/REF_26_INTEGRATOR_SECURITY_CHECKLIST.md) (integrator checklist); MFA/WebAuthn: [docs/REF_MFA_WEBAUTHN_THREAT_MODEL.md](docs/REF_MFA_WEBAUTHN_THREAT_MODEL.md).
+- **Security:** [docs/SECURITY.md](docs/SECURITY.md) (report vulnerabilities); [docs/SECURITY_ADVISORIES.md](docs/SECURITY_ADVISORIES.md) (advisory process); [docs/REF_26_INTEGRATOR_SECURITY_CHECKLIST.md](docs/REF_26_INTEGRATOR_SECURITY_CHECKLIST.md) (integrator checklist); MFA/WebAuthn: [docs/REF_MFA_WEBAUTHN_THREAT_MODEL.md](docs/REF_MFA_WEBAUTHN_THREAT_MODEL.md).
 - **Competitive backlog:** [docs/REF_25_COMPETITIVE_ADVANCE_BACKLOG.md](docs/REF_25_COMPETITIVE_ADVANCE_BACKLOG.md) (20 extended ideas + TCO appendix).
 - **Microbench (REF_25 #6):** `python -m exonware.xwauth.bench --iterations 2000` (after install or `PYTHONPATH=src`); see [benchmarks/README.md](benchmarks/README.md).
 - **Score improvement roadmap:** [.references/ROADMAP_SCORE_20.md](.references/ROADMAP_SCORE_20.md) (20 competitive-rubric work items).
@@ -114,18 +120,18 @@ This ecosystem alignment is the core differentiator: XW-Auth gives OAuth 2.0 fea
 
 ---
 
-## License and links
+## 📜 License and links
 
-MIT - see [LICENSE](LICENSE). **Homepage:** https://exonware.com · **Repository:** https://github.com/exonware/xwauth  
+Apache-2.0 - see [LICENSE](LICENSE). **Homepage:** https://exonware.com · **Repository:** https://github.com/exonware/xwauth  
 
 
-## Async Support
+## ⏱️ Async Support
 
 <!-- async-support:start -->
 - xwauth includes asynchronous execution paths in production code.
 - Source validation: 560 async def definitions and 643 await usages under src/.
 - Use async APIs for I/O-heavy or concurrent workloads to improve throughput and responsiveness.
 <!-- async-support:end -->
-Version: 0.0.1.2 | Updated: 05-Apr-2026
+Version: 0.0.1.3 | Updated: 08-Apr-2026
 
 *Built with ❤️ by eXonware.com - Revolutionizing Python Development Since 2025*
