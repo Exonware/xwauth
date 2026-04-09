@@ -1,17 +1,29 @@
-# ========================================
-# eXonware xwauth .gitignore
-# ========================================
+﻿# =============================================================================
+# exonware monorepo — canonical .gitignore (Python + TypeScript + Rust + Go)
+# =============================================================================
+# Benchmark: every `.gitignore` in the monorepo (including repo root) matches this file.
+#
+# Local runtime / credentials / downloaded state: use a per-package `.data/`
+# directory (ignored below). Local examples / sandboxes: `.examples/`.
+#
+# If a venv was committed: git rm -r --cached path/to/.venv
 
-# CI/CD Tools (keep private)
+# -----------------------------------------------------------------------------
+# Private / local / vendored trees
+# -----------------------------------------------------------------------------
 .ci/
+.secrets/
+.secrets
+.references/
+.archive/
+.examples/
+.data/
 
-# Migration/legacy directories (may contain paths too long for Windows)
-MIGRAT/
-MIGRATE/
+.archieve/
 
-# ========================================
+# -----------------------------------------------------------------------------
 # Python
-# ========================================
+# -----------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
@@ -23,8 +35,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/
@@ -36,15 +46,14 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# PyInstaller
+build/lib/
+build/lib64/
+
 *.manifest
 *.spec
-
-# Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -58,130 +67,157 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+reports/
 
-# Translations
 *.mo
 *.pot
 
-# Django stuff
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-
-# Flask stuff
 instance/
 .webassets-cache
-
-# Scrapy stuff
 .scrapy
-
-# Sphinx documentation
 docs/_build/
-
-# PyBuilder
 .pybuilder/
-target/
 
-# Jupyter Notebook
 .ipynb_checkpoints
-
-# IPython
 profile_default/
 ipython_config.py
 
-# pyenv
-# .python-version
-
-# pipenv
-#Pipfile.lock
-
-# poetry
-#poetry.lock
-
-# pdm
-#pdm.lock
+__pypackages__/
 .pdm.toml
 
-# PEP 582
-__pypackages__/
-
-# Celery stuff
 celerybeat-schedule
 celerybeat.pid
 
-# SageMath parsed files
 *.sage.py
 
-# Environments (untracked only; if committed: git rm -r --cached .venv venv)
 .env
 .venv/
-env/
 venv/
 ENV/
+env/
 env.bak/
 venv.bak/
 
-# Spyder project settings
 .spyderproject
 .spyproject
-
-# Rope project settings
 .ropeproject
 
-# mkdocs documentation
 /site
 
-# mypy
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pyre type checker
 .pyre/
-
-# pytype static type analyzer
 .pytype/
 
-# Cython debug symbols
 cython_debug/
 
-# ========================================
-# IDEs and Editors
-# ========================================
+**/runner_out.md
 
-# Visual Studio Code
+# -----------------------------------------------------------------------------
+# TypeScript / JavaScript (Node, bundlers, frameworks)
+# -----------------------------------------------------------------------------
+node_modules/
+dist-ssr/
+*.tsbuildinfo
+*.js.map
+.npm
+.eslintcache
+.stylelintcache
+.parcel-cache
+.next/
+.nuxt/
+.svelte-kit/
+.vite/
+.turbo/
+.vercel
+.netlify
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+coverage/
+.nyc_output/
+*.tgz
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.pnpm-store/
+
+storybook-static/
+
+.vscode-test/
+
+# -----------------------------------------------------------------------------
+# Rust
+# -----------------------------------------------------------------------------
+# Build output (shared name with PyBuilder / other tools)
+target/
+
+**/*.rs.bk
+
+# -----------------------------------------------------------------------------
+# Go
+# -----------------------------------------------------------------------------
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+*.test
+
+*.out
+
+vendor/
+
+# Delve / local debug binaries
+__debug_bin
+
+# -----------------------------------------------------------------------------
+# Terraform
+# -----------------------------------------------------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+override.tf
+override.tf.json
+
+# -----------------------------------------------------------------------------
+# IDEs and editors
+# -----------------------------------------------------------------------------
 .vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-
-# Local History for Visual Studio Code
 .history/
 
-# Built Visual Studio Code Extensions
-*.vsix
-
-# PyCharm
 .idea/
-
-# Sublime Text
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
-
-# Vim
 *~
 *.swp
 *.swo
 *tmp
-
-# Emacs
-*~
 \#*\#
 /.emacs.desktop
 /.emacs.desktop.lock
@@ -190,11 +226,11 @@ auto-save-list
 tramp
 .\#*
 
-# ========================================
-# Operating Systems
-# ========================================
+*.vsix
 
-# Windows
+# -----------------------------------------------------------------------------
+# Operating systems
+# -----------------------------------------------------------------------------
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
@@ -209,7 +245,6 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 
-# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -228,60 +263,24 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Linux
-*~
 .fuse_hidden*
 .directory
 .Trash-*
 .nfs*
 
-# ========================================
-# Development Tools
-# ========================================
-
-# Backup files
+# -----------------------------------------------------------------------------
+# Misc local / artifacts
+# -----------------------------------------------------------------------------
 *.bak
 *.backup
 *.tmp
 *.temp
-
-# Log files
-*.log
 /logs/
 
-# Database files
-*.sqlite
-*.sqlite3
-*.db
-
-# Configuration files with secrets (xwauth specific)
-config.ini
-secrets.json
-.secrets
-credentials.json
-*.key
-*.pem
-*.jwt
-oauth_config.json
-client_secrets.json
-
-# Local environment files
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Session storage (data files, not source code)
-*.session
-
-# xwlazy generated files (should be in ~/.xwlazy/ but ignore in case of old behavior)
-xwlazy.lock.toml
-xwlazy_sbom.toml
-.archieve/
-
-.examples/
-
-# Local private folders
-.references
-.archive
-
+*.sqlite
+*.sqlite3

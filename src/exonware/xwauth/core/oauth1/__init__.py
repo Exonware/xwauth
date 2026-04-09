@@ -6,7 +6,7 @@ Implements RFC 5849 OAuth 1.0/1.0a for legacy provider support.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.3
+Version: 0.0.1.4
 Generation Date: 25-Jan-2026
 """
 
