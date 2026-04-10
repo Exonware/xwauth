@@ -7,7 +7,7 @@ All interfaces use @runtime_checkable Protocol pattern.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.7
+Version: 0.0.1.8
 Generation Date: 20-Dec-2025
 """
 
@@ -180,25 +180,21 @@ class ISessionManager(Protocol):
         """
         ...
 # ==============================================================================
-# AUTHENTICATION INTERFACES (canonical: exonware.xwlogin.foundation.contracts — REF_41 §7)
+# AUTHENTICATION INTERFACES
 # ==============================================================================
-try:
-    from exonware.xwlogin.foundation.contracts import IAuthenticator
-except ImportError:
+@runtime_checkable
+class IAuthenticator(Protocol):
+    """Interface for authentication methods (in-process authenticator plugins)."""
 
-    @runtime_checkable
-    class IAuthenticator(Protocol):
-        """Interface for authentication methods (fallback when exonware-xwlogin is not installed)."""
-
-        async def authenticate(self, credentials: dict[str, Any]) -> str | None:
-            """
-            Authenticate user with credentials.
-            Args:
-                credentials: Authentication credentials
-            Returns:
-                User ID if authenticated, None otherwise
-            """
-            ...
+    async def authenticate(self, credentials: dict[str, Any]) -> str | None:
+        """
+        Authenticate user with credentials.
+        Args:
+            credentials: Authentication credentials
+        Returns:
+            User ID if authenticated, None otherwise
+        """
+        ...
 # ==============================================================================
 # AUTHORIZATION INTERFACES
 # ==============================================================================

@@ -27,7 +27,7 @@ def airgap_deployment_checklist() -> dict[str, Any]:
                 "id": "python_artifacts",
                 "title": "Python packages without PyPI",
                 "items": [
-                    "Build a **wheelhouse** (or vendor sdists) for exonware-xwauth, xwlogin, xwauth-api, and every transitive dependency on a connected build host.",
+                    "Build a **wheelhouse** (or vendor sdists) for exonware-xwauth, your login/IdP components, API hosts, and every transitive dependency on a connected build host.",
                     "Install with ``pip install --no-index --find-links=/path/to/wheels ...``; pin versions in a lockfile or constraints file.",
                     "Disable optional lazy/network installers (e.g. do not rely on runtime package fetch); set ``XWSTACK_SKIP_XWLAZY_INIT=1`` in hardened stacks if xwlazy is present.",
                 ],

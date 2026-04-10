@@ -18,7 +18,7 @@ _DEFAULT_STATUS = "draft"
 
 def interop_bounty_policy() -> dict[str, Any]:
     """
-    Structured scope for **protocol / interop** issues affecting ``xwauth``, ``xwlogin``, ``xwauth-api``.
+    Structured scope for **protocol / interop** issues affecting ``xwauth``, login/IdP integrations, and ``xwauth-api``.
 
     Eligibility for paid rewards (if any) will be published separately; until then this is the
     technical scope for **good-faith coordinated disclosure**.

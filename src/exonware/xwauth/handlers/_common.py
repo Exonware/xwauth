@@ -2,15 +2,11 @@
 """
 Shared helpers, tags, and security for xwauth HTTP handler mixins (connector + default API).
 
-Login-provider code should not import this module directly: use
-``exonware.xwlogin.handlers_common_connector`` / ``handlers.connector_common`` (re-export) or the full façade
-``exonware.xwlogin.handlers.connector_http``. Authenticator factories reach xwlogin only via
-``exonware.xwlogin.handlers.connector_auth_factories`` (also on ``connector_http``). Connector
-mixins (``auth_core``, SCIM, …) continue to use ``.._common`` directly.
+Shared HTTP handler helpers for the authorization-server surface in ``exonware-xwauth``.
 
-Authenticator factories are **lazy**: this module must import without ``exonware-xwlogin`` installed
-(connector-only installs). Callers get a clear ``ImportError`` if they invoke a factory without the
-login extra (GUIDE_32 / GUIDE_53).
+First-party authenticator factories are loaded **only if** a compatible login connector package
+is present on ``PYTHONPATH`` (optional runtime). ``exonware-xwauth`` does **not** declare that
+package as a pip dependency; integrate login/IdP behavior primarily via OAuth 2.0 / OIDC HTTP APIs.
 """
 
 from __future__ import annotations
@@ -36,8 +32,9 @@ from exonware.xwauth.api_paths import (
 )
 
 _LOGIN_FACTORY_ERR = (
-    "First-party authenticator factories require exonware-xwlogin; install "
-    "exonware-xwauth[xwlogin] or exonware-xwlogin[handlers]."
+    "First-party authenticator factories are unavailable: no login connector module providing "
+    "connector_auth_factories was found on PYTHONPATH. Use OAuth 2.0 / OIDC HTTP integration "
+    "with your login/IdP deployment, or add an optional connector package to the environment."
 )
 
 

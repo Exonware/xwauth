@@ -3,7 +3,7 @@
 #exonware/xwauth/src/exonware/xwauth/ops/login_ui_accessibility.py
 WCAG-oriented checklist for **reference login / consent HTML** (REF_25 #10).
 
-Applies to templates shipped in xwlogin/xwauth-web or customer UIs; not a browser audit tool.
+Applies to login UI templates (reference or customer-owned) and BFF surfaces; not a browser audit tool.
 """
 
 from __future__ import annotations

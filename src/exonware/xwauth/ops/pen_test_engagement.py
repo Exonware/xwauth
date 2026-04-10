@@ -23,7 +23,7 @@ def pen_test_engagement_checklist() -> dict[str, Any]:
                 "id": "scope",
                 "title": "Scope and assets",
                 "items": [
-                    "Enumerate in-scope components: `xwauth` library hot paths, `xwauth-api` HTTP surface, `xwlogin` reference handlers/templates, storage adapters in use.",
+                    "Enumerate in-scope components: `xwauth` library hot paths, `xwauth-api` HTTP surface, login/UI and IdP integration surfaces, storage adapters in use.",
                     "List **out of scope** (third-party IdPs, customer apps, infrastructure you do not operate).",
                     "Agree OAuth/OIDC profiles under test (grant types, federation, SCIM if exposed).",
                 ],
@@ -34,7 +34,7 @@ def pen_test_engagement_checklist() -> dict[str, Any]:
                 "items": [
                     "Dedicated **staging** stack mirroring production config (TLS, headers, rate limits).",
                     "Non-production **credentials** and synthetic tenants; no real PII.",
-                    "Version pins: git SHAs or release tags for `xwauth`, `xwlogin`, `xwauth-api`.",
+                    "Version pins: git SHAs or release tags for each in-scope component (auth library, API host, login UI, storage).",
                 ],
             },
             {

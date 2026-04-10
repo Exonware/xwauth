@@ -27,7 +27,7 @@ from .._common import (
 def _fallback_render_oidc_form_post_html(
     redirect_uri: str, form_fields: dict[str, Any]
 ) -> str:
-    """Connector-only install: same markup as ``xwlogin.form_post_connector.render_oidc_form_post_html``."""
+    """OIDC ``response_mode=form_post`` auto-submit HTML (RFC/OIDC-friendly)."""
     action = html.escape(str(redirect_uri))
     inputs = "".join(
         f'<input type="hidden" name="{html.escape(str(k))}" value="{html.escape(str(v))}"/>'
@@ -41,14 +41,7 @@ def _fallback_render_oidc_form_post_html(
 
 
 def _render_oidc_form_post_html(redirect_uri: str, form_fields: dict[str, Any]) -> str:
-    try:
-        from exonware.xwlogin.form_post_connector import (
-            render_oidc_form_post_html as _login_render,
-        )
-
-        return _login_render(redirect_uri, form_fields)
-    except ImportError:
-        return _fallback_render_oidc_form_post_html(redirect_uri, form_fields)
+    return _fallback_render_oidc_form_post_html(redirect_uri, form_fields)
 
 
 _AUTHORIZE_PASSTHROUGH = (

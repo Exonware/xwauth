@@ -3,11 +3,10 @@
 #exonware/xwauth/src/exonware/xwauth/providers/__init__.py
 XWAuth provider **core**: registry, base class, and xwsystem bridge types.
 
-Concrete OAuth/OIDC identity providers live in **exonware-xwlogin**
-(``exonware.xwlogin.providers``). Submodule ``callback_providers`` is a **thin shim**
-to ``exonware.xwlogin.providers.callback_providers``. For backwards compatibility,
-``from exonware.xwauth.providers import SomeProvider`` resolves via
-:data:`__getattr__` when xwlogin is installed.
+Concrete OAuth/OIDC identity provider implementations may be supplied by separate packages
+on ``PYTHONPATH``. Submodule ``callback_providers`` documents the expected callback
+discovery surface; ``exonware-xwauth`` does not declare those packages as pip dependencies.
+Integrate IdPs primarily via OAuth 2.0 / OIDC HTTP APIs.
 
 Company: eXonware.com
 Author: eXonware Backend Team
@@ -33,14 +32,14 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
-    """Delegate IdP symbols to ``exonware.xwlogin.providers`` when installed."""
+    """Delegate IdP symbols to an optional providers package on ``PYTHONPATH``, if present."""
     try:
         import exonware.xwlogin.providers as _lp
     except ImportError as e:
         raise AttributeError(
             f"module {__name__!r} has no attribute {name!r}. "
-            "Install optional dependency exonware-xwlogin (pip install exonware-xwauth[xwlogin]) "
-            "for concrete identity providers, or import from exonware.xwlogin.providers."
+            "No optional IdP provider package was found. Use OAuth 2.0 / OIDC HTTP integration, "
+            "or add a compatible provider package to the environment."
         ) from e
     if hasattr(_lp, name):
         return getattr(_lp, name)
@@ -50,6 +49,7 @@ def __getattr__(name: str) -> Any:
 def __dir__() -> list[str]:
     try:
         import exonware.xwlogin.providers as _lp
+
         extra = [x for x in dir(_lp) if not x.startswith("_")]
     except ImportError:
         extra = []

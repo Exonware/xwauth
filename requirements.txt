@@ -14,7 +14,7 @@
 # =============================================================================
 
 # eXonware Ecosystem Dependencies
-# Source size (src/*): ~975.4 KB
+# Source size (src/*): ~991.0 KB
 exonware-xwsystem          # Foundation library (security, crypto, HTTP client, XWObject)
 exonware-xwstorage        # Data storage (user persistence)
 exonware-xwaction          # Workflow automation (auth-aware actions)
@@ -96,12 +96,11 @@ mypy>=1.0.0                       # Static type checking
 # This requirements.txt covers the backend library.
 # Server and UI have separate requirements files.
 #
-# Installation modes (see pyproject.toml):
+# Installation modes (see pyproject.toml — authoritative list):
 # - Default: core runtime deps
-# - [lazy]: xwlazy + xwsystem[lazy]
-# - [dev]: xwlazy + xwsystem[dev] (local development)
-# - [api]: xwaction + fastapi
-# - [full]: xwsystem[full] + auth/oauth/WebAuthn-related libs
+# - [lazy], [xw], [full], [dev]: see pyproject optional-dependencies
+# - Third-party pins (PyJWT, cryptography, …) carry versions; first-party exonware-xw*
+#   packages are named without versions here — resolve via your lockfile or monorepo install.
 #
 # Python Version: >=3.12
 # Platform: Windows, Linux, macOS

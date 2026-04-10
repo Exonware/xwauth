@@ -4,14 +4,14 @@
 XWAuth — **OAuth 2.0 / OIDC connector** for the Exonware stack: authorization server surface,
 token and session contracts, federation core, storage hooks, and policy integration.
 
-**Identity providers**, WebAuthn/MFA, and OAuth **RP clients** live in **exonware-xwlogin**
-(`exonware.xwlogin`). Install `exonware-xwauth[xwlogin]` or `exonware-xwlogin` for the full
-login + connector story. Those symbols are also re-exported from this package via **lazy**
-imports (PEP 562) so `import exonware.xwauth` works without xwlogin until you access a
-login-only name. See `xwauth/.references/` for competitive positioning notes. When **exonware-xwlogin**
-is installed, prefer its ``*_connector`` and ``handlers.connector_*`` modules over deep
-``exonware.xwauth.*`` imports for IdPs, login HTTP glue, and MFA helpers — summarized in
-``.references/COMPETITIVE_STACK.md``.
+OAuth **client** helpers (RP-style sessions, token manager, entity sessions) ship **in this
+package** under ``exonware.xwauth.clients`` and talk to **any** OAuth 2.0 / OIDC authorization
+server over HTTP.
+
+Login, IdP catalogs, WebAuthn stores, and first-party authenticator **implementations** are
+**not** declared dependencies of ``exonware-xwauth``. Treat them as separate products or
+services that follow OAuth 2.0, OIDC, WebAuthn, or your chosen API contracts at the HTTP
+boundary. See ``xwauth/.references/`` for positioning notes.
 """
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ if os.environ.get("XWSTACK_SKIP_XWLAZY_INIT", "").lower() not in ("1", "true", "
         # xwlazy not installed — omit [lazy] extra or install exonware-xwlazy for lazy mode.
         pass
 from .version import __version__, __author__, __email__
-# Core exports (facade factories lazy-import xwlogin only when called)
+# Core exports (OAuth client symbols lazy-import from exonware.xwauth.clients)
 from .facade import XWAuth, create_webauthn_challenge_store, create_webauthn_credential_index_redis
 from .config.config import XWAuthConfig
 from .contracts import AuthContext, IAuthContextResolver, IStorageProvider, IRateLimiter, IAuditLogger
@@ -72,75 +72,55 @@ from .extensions import IAuthHook, AuthHookRegistry
 from .federation import FederationBroker, FederatedIdentity
 from .oauth_http.resource_owner_session import ensure_resource_owner_session
 
-_LAZY_XWLOGIN: dict[str, tuple[str, str]] = {
-    "build_pem_root_certs_bytes_by_fmt": (
-        "exonware.xwlogin.authentication.attestation_trust",
-        "build_pem_root_certs_bytes_by_fmt",
-    ),
-    "audit_mfa_event": (
-        "exonware.xwlogin.authentication.mfa_webauthn_audit",
-        "audit_mfa_event",
-    ),
-    "audit_webauthn_event": (
-        "exonware.xwlogin.authentication.mfa_webauthn_audit",
-        "audit_webauthn_event",
-    ),
-    "WebAuthnManager": (
-        "exonware.xwlogin.authentication.webauthn",
-        "WebAuthnManager",
-    ),
-    "register_webauthn_credential_mapping": (
-        "exonware.xwlogin.authentication.webauthn_credential_index",
-        "register_webauthn_credential_mapping",
-    ),
-    "unregister_webauthn_credential_mapping": (
-        "exonware.xwlogin.authentication.webauthn_credential_index",
-        "unregister_webauthn_credential_mapping",
-    ),
-    "rebuild_webauthn_credential_index": (
-        "exonware.xwlogin.authentication.webauthn_credential_index",
-        "rebuild_webauthn_credential_index",
-    ),
-    "resolve_user_for_webauthn_credential": (
-        "exonware.xwlogin.authentication.webauthn_credential_index",
-        "resolve_user_for_webauthn_credential",
-    ),
+_LAZY_CLIENT_EXPORTS: dict[str, tuple[str, str]] = {
     "OAuth2ClientManager": (
-        "exonware.xwlogin.clients.oauth_client",
+        "exonware.xwauth.clients.oauth_client",
         "OAuth2ClientManager",
     ),
     "EntitySessionManager": (
-        "exonware.xwlogin.clients.entity_session_manager",
+        "exonware.xwauth.clients.entity_session_manager",
         "EntitySessionManager",
     ),
     "OAuth2Session": (
-        "exonware.xwlogin.clients.oauth2_client",
+        "exonware.xwauth.clients.oauth2_client",
         "OAuth2Session",
     ),
     "AsyncOAuth2Session": (
-        "exonware.xwlogin.clients.async_client",
+        "exonware.xwauth.clients.async_client",
         "AsyncOAuth2Session",
     ),
 }
 
-_LOGIN_INSTALL_HINT = (
-    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for WebAuthn/MFA helpers "
-    "and OAuth RP clients."
+_LEGACY_WEBAUTHN_EXPORTS = frozenset(
+    {
+        "WebAuthnManager",
+        "build_pem_root_certs_bytes_by_fmt",
+        "audit_mfa_event",
+        "audit_webauthn_event",
+        "register_webauthn_credential_mapping",
+        "unregister_webauthn_credential_mapping",
+        "rebuild_webauthn_credential_index",
+        "resolve_user_for_webauthn_credential",
+    }
+)
+
+_WEBAUTHN_ATTR_ERR = (
+    "not exported from exonware.xwauth: integrate WebAuthn, MFA attestation, or credential "
+    "indexing via a separate component or HTTPS API — not as a coupled Python dependency."
 )
 
 
 def __getattr__(name: str) -> Any:
-    spec = _LAZY_XWLOGIN.get(name)
+    if name in _LEGACY_WEBAUTHN_EXPORTS:
+        raise AttributeError(f"{name!r} {_WEBAUTHN_ATTR_ERR}")
+    spec = _LAZY_CLIENT_EXPORTS.get(name)
     if spec is None:
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
     mod_name, attr_name = spec
     try:
         mod = importlib.import_module(mod_name)
     except ImportError as e:
-        raise AttributeError(
-            f"cannot import {name!r}: optional package exonware-xwlogin is not installed. "
-            f"{_LOGIN_INSTALL_HINT}"
-        ) from e
+        raise AttributeError(f"cannot import {name!r} from {mod_name!r}") from e
     value = getattr(mod, attr_name)
     globals()[name] = value
     return value
@@ -148,7 +128,9 @@ def __getattr__(name: str) -> Any:
 
 def __dir__() -> list[str]:
     return sorted(
-        {n for n in globals() if not n.startswith("_")} | set(_LAZY_XWLOGIN)
+        {n for n in globals() if not n.startswith("_")}
+        | set(_LAZY_CLIENT_EXPORTS)
+        | set(_LEGACY_WEBAUTHN_EXPORTS)
     )
 
 

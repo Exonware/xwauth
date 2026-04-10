@@ -6,7 +6,7 @@ Main public API for xwauth library.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.7
+Version: 0.0.1.8
 Generation Date: 20-Dec-2025
 """
 
@@ -29,22 +29,25 @@ from .scim import SCIM_GROUP_SCHEMA, SCIM_USER_SCHEMA, ScimService
 logger = get_logger(__name__)
 
 
-def create_webauthn_challenge_store(config: XWAuthConfig) -> Any:
-    """Delegates to ``exonware.xwlogin.webauthn_connector`` (login-provider WebAuthn stores)."""
-    from exonware.xwlogin.webauthn_connector import (
-        create_webauthn_challenge_store as _from_login,
+def create_webauthn_challenge_store(_config: XWAuthConfig) -> Any:
+    """
+    WebAuthn challenge persistence is not bundled in ``exonware-xwauth``.
+
+    Integrate passkeys/WebAuthn via a separate deployment or library that follows
+    W3C WebAuthn and exposes it to your stack over HTTPS.
+    """
+    raise NotImplementedError(
+        "create_webauthn_challenge_store is not provided by exonware-xwauth. "
+        "Use a WebAuthn-capable service or in-app store in your deployment."
     )
 
-    return _from_login(config)
 
-
-def create_webauthn_credential_index_redis(config: XWAuthConfig) -> Any:
-    """Delegates to ``exonware.xwlogin.webauthn_connector``."""
-    from exonware.xwlogin.webauthn_connector import (
-        create_webauthn_credential_index_redis as _from_login,
+def create_webauthn_credential_index_redis(_config: XWAuthConfig) -> Any:
+    """See :func:`create_webauthn_challenge_store`."""
+    raise NotImplementedError(
+        "create_webauthn_credential_index_redis is not provided by exonware-xwauth. "
+        "Use a WebAuthn-capable service or in-app index in your deployment."
     )
-
-    return _from_login(config)
 
 
 class XWAuth(ABaseAuth):
@@ -478,7 +481,7 @@ class XWAuth(ABaseAuth):
         Complete OAuth/OIDC callback exchange and return normalized federated identity.
 
         *extra_user_claims*: optional claims from the authorization callback (e.g. Apple's
-        form_post ``user`` via :func:`~exonware.xwlogin.providers.apple.parse_apple_authorization_user`)
+        OIDC-style form_post ``user`` payload from your integration layer)
         merged after userinfo and id_token fallback so signed claims stay authoritative.
         """
         v_hashes = verify_oidc_token_hashes

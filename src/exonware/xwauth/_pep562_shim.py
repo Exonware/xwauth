@@ -1,4 +1,4 @@
-"""Shared PEP 562 lazy re-exports for compatibility shims to ``exonware.xwlogin``."""
+"""Shared PEP 562 lazy re-exports (historical); ``exonware.xwlogin`` is not imported."""
 
 from __future__ import annotations
 
@@ -6,8 +6,11 @@ import importlib
 from typing import Any, Sequence
 
 _DEFAULT_HINT = (
-    "Install exonware-xwlogin (e.g. pip install 'exonware-xwauth[xwlogin]') for login-provider implementations."
+    "exonware-xwauth does not import login-provider packages. "
+    "Integrate identity/login via OAuth 2.0 / OIDC (and related) HTTP APIs from your deployment."
 )
+
+_XWLOGIN_PREFIX = "exonware.xwlogin."
 
 
 def bind_lazy_exports(
@@ -26,6 +29,10 @@ def bind_lazy_exports(
     def __getattr__(name: str) -> Any:
         if name not in names_f:
             raise AttributeError(f"module {mod_name!r} has no attribute {name!r}")
+        if impl_module.startswith(_XWLOGIN_PREFIX):
+            raise AttributeError(
+                f"cannot resolve {name!r} from {mod_name!r}: {hint}"
+            ) from None
         try:
             mod = importlib.import_module(impl_module)
         except ImportError as e:

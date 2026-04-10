@@ -1,9 +1,11 @@
 # exonware/xwauth/src/exonware/xwauth/connectors/login_bridge.py
 """
-How **exonware-xwauth** attaches to **exonware-xwlogin** (REF_41 §6).
+Attach **exonware-xwauth** to a login or IdP surface over **HTTP**.
 
-- **IN_PROCESS:** import ``exonware.xwlogin`` when both packages are installed (same interpreter).
-- **REMOTE_API:** HTTP client to a host running **exonware-xwlogin-api** on **XWApiServer** (base URL + routes).
+``exonware-xwauth`` stays decoupled from concrete login products: treat any
+login or identity deployment as a separate service that exposes OAuth 2.0 /
+OIDC (or similar) endpoints. Use ``LoginBridgeMode.REMOTE_API`` and an HTTP
+client to that base URL.
 """
 
 from __future__ import annotations
@@ -15,7 +17,7 @@ from typing import Any
 
 @dataclass(frozen=True, slots=True)
 class LoginRemoteConfig:
-    """HTTP attachment to a **xwlogin-api** host (**XWApiServer**). Use with ``LoginBridgeMode.REMOTE_API``."""
+    """HTTP client configuration for a remote login / IdP deployment."""
 
     base_url: str
     """Scheme + host (+ optional port), no trailing slash, e.g. ``https://login.example.com``."""
@@ -26,24 +28,18 @@ class LoginRemoteConfig:
 class LoginBridgeMode(str, Enum):
     """Where login primitives are resolved for this auth deployment."""
 
-    IN_PROCESS = "in_process"
     REMOTE_API = "remote_api"
 
 
 def load_login_package() -> Any:
     """
-    Return the ``exonware.xwlogin`` module (in-process attachment).
-
-    Raises ``ImportError`` with guidance if ``exonware-xwlogin`` is not installed —
-    install the login product or use ``LoginBridgeMode.REMOTE_API``.
+    .. deprecated::
+        In-process login package coupling was removed. Use ``LoginRemoteConfig``
+        and call your login / IdP service over HTTPS using standard OAuth 2.0 /
+        OIDC endpoints.
     """
-    try:
-        import exonware.xwlogin as xwlogin
-    except ImportError as e:
-        raise ImportError(
-            "exonware-xwlogin is not installed. For in-process login wiring install "
-            "'exonware-xwlogin' (e.g. pip install exonware-xwauth[xwlogin]). "
-            "For remote login, use LoginBridgeMode.REMOTE_API with an HTTP client to "
-            "exonware-xwlogin-api."
-        ) from e
-    return xwlogin
+    raise ImportError(
+        "In-process login packages are not loaded from exonware-xwauth. "
+        "Use LoginBridgeMode.REMOTE_API with LoginRemoteConfig (base URL + HTTP client) "
+        "against a standards-compliant login or IdP deployment."
+    )

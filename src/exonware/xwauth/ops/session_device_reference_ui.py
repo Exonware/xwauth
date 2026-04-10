@@ -3,7 +3,7 @@
 #exonware/xwauth/src/exonware/xwauth/ops/session_device_reference_ui.py
 Checklist for **end-user session and device management** in the reference app (REF_25 #14).
 
-Applies to ``xwlogin`` templates and ``xwauth-api`` session APIs they call.
+Applies to login UI templates and ``xwauth-api`` session APIs they call.
 """
 
 from __future__ import annotations

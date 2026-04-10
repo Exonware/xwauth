@@ -1,8 +1,8 @@
 # xwauth
 
-**OAuth 2.0 / OIDC connector** — authorization server primitives, tokens, sessions, federation core, and storage contracts. **Concrete IdPs, WebAuthn/MFA, OAuth RP clients, and FastAPI login route mixins** ship in sibling package **exonware-xwlogin** (`pip install exonware-xwauth[xwlogin]` pulls `exonware-xwlogin[handlers]`). Ties to xwentity, xwstorage, xwaction where you wire them. Docs in `docs/`; competitive notes in `.references/`.
+**OAuth 2.0 / OIDC authorization server** — tokens, sessions, federation core, storage contracts, and **OAuth client** helpers under `exonware.xwauth.clients` (any standards-compliant authorization server over HTTP). **Login, IdP catalogs, WebAuthn persistence, and first-party authenticator implementations** are **not** pip dependencies of this package: treat them as separate services or add-ons that speak OAuth 2.0, OIDC, WebAuthn, or your chosen HTTP APIs. Optional XW libraries (entity, storage, action, …) wire in via extras where you need them. Docs in `docs/`; competitive notes in `.references/`.
 
-**Target dependency direction (0.x migration):** *xwauth* **consumes** *xwlogin*; *xwlogin* must **not** depend on *xwauth* once foundation types move — see monorepo **[REF_41_DEPENDENCY_DIRECTIONS.md](../.docs/guides/REF_41_DEPENDENCY_DIRECTIONS.md)** (pip cannot cycle both ways until that move completes). **Attachment:** `exonware.xwauth.connectors.login_bridge` documents **in-process** (`load_login_package`) vs **remote** (**xwlogin-api** / HTTP) via `LoginRemoteConfig` (REF_41 §6). For HTTP clients: `pip install exonware-xwauth[login_remote]` (pulls **httpx**).
+**Integration:** `exonware.xwauth.connectors.login_bridge` documents attaching to a remote login or IdP deployment via `LoginRemoteConfig` (HTTPS). Use **httpx** or any HTTP client for calls to your login base URL. `load_login_package` is not supported (no in-process coupling to a login product).
 
 **Company:** eXonware.com · **Author:** eXonware Backend Team · **Email:** connect@exonware.com  
 
@@ -18,13 +18,11 @@
 pip install exonware-xwauth
 pip install exonware-xwauth[lazy]
 pip install exonware-xwauth[full]
-pip install exonware-xwauth[xwlogin]   # exonware-xwlogin (IdPs, clients, FastAPI login mixins)
-pip install exonware-xwauth[login_remote]   # httpx — HTTP client to xwlogin-api (REF_41 §6)
-pip install exonware-xwauth[stack]   # xwjson, xwnode, xwdata, xwentity, xwmodels, xwquery — xwschema is core (REF_41 §8)
-pip install "exonware-xwauth[enterprise]"   # SAML + storage + login handlers (self-hosted AS embedding)
+pip install exonware-xwauth[xw]      # optional first-party XW stack pieces (see pyproject.toml)
+pip install exonware-xwauth[dev]      # tests + full extra
 ```
 
-After **`[stack]`**, optional: **`import exonware.xwauth.stack`** at process startup to eagerly import **xwjson** … **xwquery** (REF_41 §8).
+Extras evolve with `pyproject.toml` — see [docs/REF_39_EDITION_AND_SKUS.md](docs/REF_39_EDITION_AND_SKUS.md) for edition/SKU language. Third-party and first-party **package versions** are not pinned in this README; use your lockfile or release process.
 
 SKUs and extras: [docs/REF_39_EDITION_AND_SKUS.md](docs/REF_39_EDITION_AND_SKUS.md).
 
@@ -94,9 +92,9 @@ This ecosystem alignment is the core differentiator: XW-Auth gives OAuth 2.0 fea
 - **Thin OIDC client patterns (ROADMAP #16):** [GUIDE_09](docs/GUIDE_09_OIDC_THIN_CLIENT_PATTERNS.md) (PKCE, refresh §5).
 - **Start:** [docs/INDEX.md](docs/INDEX.md) or [docs/](docs/).
 - **Ops program:** [docs/REF_24_OPS_PERFECT_SCORE_EXECUTION_PLAN.md](docs/REF_24_OPS_PERFECT_SCORE_EXECUTION_PLAN.md) and `REF_60+` contracts.
-- **Protocol rigor (ROADMAP #5):** [REF_53](docs/REF_53_PROTOCOL_TRACEABILITY_MATRIX.md), [REF_54](docs/REF_54_PROTOCOL_DEVIATION_REGISTER.md), [REF_55](docs/REF_55_PROTOCOL_PROFILE_SCHEMA_NOTES.md); **CI:** `xwauth-api` `.github/workflows/protocol-conformance.yml` (A/B/C); `xwauth` `.github/workflows/protocol-governance.yml` (deviation gate).
+- **Protocol rigor (ROADMAP #5):** [REF_53](docs/REF_53_PROTOCOL_TRACEABILITY_MATRIX.md), [REF_54](docs/REF_54_PROTOCOL_DEVIATION_REGISTER.md), [REF_55](docs/REF_55_PROTOCOL_PROFILE_SCHEMA_NOTES.md); **CI:** `xwauth-api` `.github/workflows/protocol-conformance.yml` (A/B/C); local deviation checks via `scripts/protocol_governance_check.py`.
 - **Federation / IdP quirks (Entra, Okta, Google):** [docs/REF_27_IDP_OIDC_QUIRKS.md](docs/REF_27_IDP_OIDC_QUIRKS.md), module `exonware.xwauth.federation.idp_quirks`.
-- **SAML enterprise kit (ROADMAP #6):** [GUIDE_10](docs/GUIDE_10_SAML_ENTERPRISE_KIT.md) (`pip install "exonware-xwauth[saml]"` or `[enterprise]`).
+- **SAML enterprise kit (ROADMAP #6):** [GUIDE_10](docs/GUIDE_10_SAML_ENTERPRISE_KIT.md) (install SAML-related optional dependencies per `pyproject.toml` / your lockfile).
 - **SCIM hardening (ROADMAP #7):** [GUIDE_11](docs/GUIDE_11_SCIM_HARDENING.md) (`/v1/scim/v2/*`, pagination, errors, ETags).
 - **Federation interop lab (ROADMAP #8):** [GUIDE_12](docs/GUIDE_12_FEDERATION_INTEROP_LAB.md); matrix: [docs/federation/INTEROP_MATRIX.md](docs/federation/INTEROP_MATRIX.md).
 - **Email / magic-link ops (SPF/DKIM/DMARC):** [docs/REF_28_EMAIL_MAGIC_LINK_OPS.md](docs/REF_28_EMAIL_MAGIC_LINK_OPS.md), `exonware.xwauth.ops`.
@@ -132,6 +130,6 @@ Apache-2.0 - see [LICENSE](LICENSE). **Homepage:** https://exonware.com · **Rep
 - Source validation: 560 async def definitions and 643 await usages under src/.
 - Use async APIs for I/O-heavy or concurrent workloads to improve throughput and responsiveness.
 <!-- async-support:end -->
-Version: 0.0.1.7 | Updated: 11-Apr-2026
+Version: 0.0.1.8 | Updated: 11-Apr-2026
 
 *Built with ❤️ by eXonware.com - Revolutionizing Python Development Since 2025*

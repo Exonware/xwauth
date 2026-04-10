@@ -219,14 +219,7 @@ async def _list_users_with_resilience(user_lifecycle: Any) -> Any:
 )
 async def oauth_protected_resource(request: Request) -> Any:
     """Get OAuth 2.0 Protected Resource Metadata (RFC 9728)."""
-    try:
-        from exonware.xwlogin.discovery_connector import (
-            oauth_protected_resource_metadata,
-        )
-    except ImportError:
-        from exonware.xwauth.oauth_http.discovery import (
-            oauth_protected_resource_metadata,
-        )
+    from exonware.xwauth.oauth_http.discovery import oauth_protected_resource_metadata
     auth = get_auth(request)
     # Get issuer from app state (set by xwauth-api server)
     issuer = getattr(request.app.state, 'xwauth_issuer', None)

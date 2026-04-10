@@ -1,4 +1,4 @@
-"""Compatibility shim: OAuth callback discovery lives in ``exonware.xwlogin.providers.callback_providers``."""
+"""Legacy OAuth callback discovery shim (blocked — use OAuth 2.0 / OIDC HTTP integration)."""
 
 from __future__ import annotations
 

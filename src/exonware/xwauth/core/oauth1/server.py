@@ -6,7 +6,7 @@ Implements OAuth 1.0 authorization server (RFC 5849).
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.7
+Version: 0.0.1.8
 Generation Date: 25-Jan-2026
 """
 
