@@ -6,7 +6,7 @@ Handles webhook HTTP delivery with retry logic and HMAC signing.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.5
+Version: 0.0.1.6
 Generation Date: 25-Jan-2026
 """
 
