@@ -43,11 +43,10 @@ Track protocol deviations and waivers with explicit owners and closure dates. Th
   - one test anchor,
   - one explicit owner.
 
-Automated governance gate:
+Governance checker (run locally or in a custom pipeline; not a separate `xwauth` GitHub Actions workflow—`xwauth` CI is aligned with `xwsystem`):
 
-- `xwauth/.github/workflows/protocol-governance.yml`
 - checker: `xwauth/scripts/protocol_governance_check.py`
-- behavior: build fails when unresolved `critical` deviations exist.
+- behavior: exits non-zero when unresolved `critical` deviations exist.
   - profile-aware rule: profile `C` also fails on unresolved `high` deviations.
 
 ---

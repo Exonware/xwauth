@@ -9,7 +9,7 @@ Session storage via IStorageProvider interface.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.6
+Version: 0.0.1.7
 Generation Date: 20-Dec-2025
 """
 

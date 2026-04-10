@@ -7,7 +7,7 @@ to the authorization server before redirecting the user.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.6
+Version: 0.0.1.7
 Generation Date: 25-Jan-2026
 """
 

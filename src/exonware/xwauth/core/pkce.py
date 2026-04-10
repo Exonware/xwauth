@@ -6,7 +6,7 @@ Proof Key for Code Exchange - mandatory for OAuth 2.1, recommended for all clien
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.6
+Version: 0.0.1.7
 Generation Date: 20-Dec-2025
 """
 

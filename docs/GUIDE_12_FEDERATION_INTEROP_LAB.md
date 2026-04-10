@@ -11,7 +11,7 @@
 | Layer | What it proves | Where |
 |-------|----------------|--------|
 | **A. In-repo protocol suites** | AS/OIDC/SCIM behavior against **TestClient** + matrix tests | `xwauth-api` `protocol-conformance.yml`, `test_oauth_interop_matrix.py`, `test_oauth_endpoint_matrix.py` |
-| **B. Library smoke** | Federation + SAML **unit** coverage without live IdPs | `xwauth` `.github/workflows/federation-interop-smoke.yml` |
+| **B. Library smoke** | Federation + SAML **unit** coverage without live IdPs | Local / CI: `pytest` on `xwauth/tests/1.unit/` (federation, SAML, interop lab); `xwauth` GitHub Actions match `xwsystem` (version checks + PyPI on tag only) |
 | **C. Recorded contracts** | **Redacted** request/response artifacts from real IdPs, replayed in tests or mocks | `tests/fixtures/interop_lab/` + manifest (below) |
 
 Layer **C** is what this guide grows over time; **A/B** should stay green on every PR.

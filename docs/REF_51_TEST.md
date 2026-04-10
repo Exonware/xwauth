@@ -46,7 +46,7 @@ See repo `tests/` and `docs/logs/tests/` for run evidence.
 
 ## Protocol CI Gate
 
-- Discovery metadata builders (fast, no API stack): `xwauth/.github/workflows/protocol-unit.yml`
+- Discovery metadata builders (fast, no API stack): run `pytest xwauth/tests/1.unit/oauth_http_tests/test_discovery_metadata_contract.py` locally or in your pipeline (`xwauth` repo workflows match `xwsystem`: version checks + PyPI publish on tag).
 - Workflow: `xwauth-api/.github/workflows/protocol-conformance.yml`
 - Signed artifact outputs:
   - `artifacts/protocol-scorecard-<profile>.json`

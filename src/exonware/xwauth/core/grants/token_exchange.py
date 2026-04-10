@@ -6,7 +6,7 @@ Implements OAuth 2.0 Token Exchange grant type for exchanging tokens.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.6
+Version: 0.0.1.7
 Generation Date: 25-Jan-2026
 """
 
