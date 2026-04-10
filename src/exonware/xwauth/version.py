@@ -14,14 +14,14 @@ from datetime import datetime
 def _today_release_date() -> str:
     """Return today's date in DD-MMM-YYYY."""
     return datetime.now().strftime("%d-%b-%Y")
-__version__ = "0.0.1.4"
+__version__ = "0.0.1.5"
 __author__ = "eXonware Backend Team"
 __email__ = "connect@exonware.com"
 __date__ = _today_release_date()
 VERSION_MAJOR = 0
 VERSION_MINOR = 0
 VERSION_PATCH = 1
-VERSION_BUILD = 4
+VERSION_BUILD = 5
 VERSION_SUFFIX = ""
 VERSION_STRING = __version__ + VERSION_SUFFIX
 

@@ -70,6 +70,7 @@ from .jose import JWTManager, JWSManager, JWEManager, JWKManager, JWAManager, JO
 from .core.rfc import RFC9101BrowserBasedApps, RFC9207IssuerIdentification, RFC9068JWTProfile, RFC7521JWTBearerToken
 from .extensions import IAuthHook, AuthHookRegistry
 from .federation import FederationBroker, FederatedIdentity
+from .oauth_http.resource_owner_session import ensure_resource_owner_session
 
 _LAZY_XWLOGIN: dict[str, tuple[str, str]] = {
     "build_pem_root_certs_bytes_by_fmt": (
@@ -228,4 +229,6 @@ __all__ = [
     "AuthHookRegistry",
     "FederationBroker",
     "FederatedIdentity",
+    # Resource-owner probe + password grant (Cookie/Authorization reuse)
+    "ensure_resource_owner_session",
 ]
