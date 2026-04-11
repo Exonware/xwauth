@@ -15,10 +15,10 @@
 
 # eXonware Ecosystem Dependencies
 # Source size (src/*): ~991.0 KB
-exonware-xwsystem          # Foundation library (security, crypto, HTTP client, XWObject)
-exonware-xwstorage        # Data storage (user persistence)
-exonware-xwaction          # Workflow automation (auth-aware actions)
-exonware-xwschema          # Schema validation (user data validation)
+exonware-xwsystem==0.9.0.38          # Foundation library (security, crypto, HTTP client, XWObject)
+exonware-xwstorage==0.0.1.6        # Data storage (user persistence)
+exonware-xwaction==0.9.0.11          # Workflow automation (auth-aware actions)
+exonware-xwschema==0.4.0.11          # Schema validation (user data validation)
 
 # =============================================================================
 # OAUTH 2.0 / OPENID CONNECT DEPENDENCIES
@@ -74,7 +74,7 @@ webauthn>=2.0.0                   # WebAuthn implementation (python-webauthn)
 pytest>=7.0.0                     # Testing framework
 pytest-cov>=4.0.0                 # Coverage reporting
 pytest-asyncio>=0.21.0            # Async testing support
-exonware-xwauth-api               # API transport package that depends on core `exonware-xwauth`
+exonware-xwauth-api==0.0.1.0               # API transport package that depends on core `exonware-xwauth==0.0.1.8`
 
 # Code Quality
 black>=23.0.0                     # Code formatting
@@ -89,7 +89,7 @@ mypy>=1.0.0                       # Static type checking
 # =============================================================================
 #
 # xwauth is a three-tier platform:
-# 1. Backend Library (exonware-xwauth) - OAuth 2.0 implementation
+# 1. Backend Library (exonware-xwauth==0.0.1.8) - OAuth 2.0 implementation
 # 2. Web API Server (xwauth-server) - OAuth endpoints, user management
 # 3. Frontend UI (xwauth-ui) - React/TypeScript auth components
 #

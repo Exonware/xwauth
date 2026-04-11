@@ -6,7 +6,7 @@ Manages webhook registration, storage, and event triggering.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.8
+Version: 0.0.1.9
 Generation Date: 25-Jan-2026
 """
 
