@@ -6,7 +6,7 @@ Implements HMAC-SHA1 signature generation and verification for OAuth 1.0 (RFC 58
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.10
+Version: 0.0.1.11
 Generation Date: 25-Jan-2026
 """
 

@@ -6,7 +6,7 @@ SAML 2.0 Single Sign-On implementation with metadata generation and ACS handling
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.10
+Version: 0.0.1.11
 Generation Date: 25-Jan-2026
 """
 

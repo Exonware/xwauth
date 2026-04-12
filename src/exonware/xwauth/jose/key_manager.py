@@ -6,7 +6,7 @@ Manages cryptographic keys for JOSE operations using format-agnostic storage.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.10
+Version: 0.0.1.11
 Generation Date: 25-Jan-2026
 """
 
