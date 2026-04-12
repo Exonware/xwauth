@@ -11,7 +11,7 @@ Implements JSON Object Signing and Encryption (JOSE) standards:
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.9
+Version: 0.0.1.10
 Generation Date: 25-Jan-2026
 """
 

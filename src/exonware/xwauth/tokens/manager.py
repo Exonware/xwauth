@@ -6,7 +6,7 @@ Orchestrates JWT, opaque, and refresh token management.
 Company: eXonware.com
 Author: eXonware Backend Team
 Email: connect@exonware.com
-Version: 0.0.1.9
+Version: 0.0.1.10
 Generation Date: 20-Dec-2025
 """
 

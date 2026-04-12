@@ -22,9 +22,9 @@ dependencies = [
   "oauthlib>=3.2.2",
   "webauthn>=2.0.0",
   "fastapi>=0.104.0",
-  "exonware-xwsystem==0.9.0.38",
-  "exonware-xwaction==0.9.0.11",
-  "exonware-xwschema==0.4.0.11",
+  "exonware-xwsystem==0.9.0.39",
+  "exonware-xwaction==0.9.0.12",
+  "exonware-xwschema==0.4.0.12",
 ]
 
 [project.license]
@@ -33,44 +33,44 @@ text = "Apache-2.0"
 [project.optional-dependencies]
 # First-party XW libs composed by this package (excludes exonware-xwsystem==0.9.0.37; see lazy/full).
 xw = [
-  "exonware-xwaction==0.9.0.11",
-  "exonware-xwdata==0.9.0.16",
-  "exonware-xwentity==0.6.0.9",
-  "exonware-xwjson==0.9.0.22",
-  "exonware-xwmodels==0.6.0.12",
-  "exonware-xwnode==0.9.0.24",
-  "exonware-xwquery==0.9.0.14",
-  "exonware-xwschema==0.4.0.11",
-  "exonware-xwstorage==0.0.1.6",
+  "exonware-xwaction==0.9.0.12",
+  "exonware-xwdata==0.9.0.17",
+  "exonware-xwentity==0.6.0.11",
+  "exonware-xwjson==0.9.0.23",
+  "exonware-xwmodels==0.6.0.13",
+  "exonware-xwnode==0.9.0.25",
+  "exonware-xwquery==0.9.0.15",
+  "exonware-xwschema==0.4.0.12",
+  "exonware-xwstorage==0.0.1.7",
 ]
 lazy = [
-  "exonware-xwauth[xw]==0.0.1.9",
-  "exonware-xwlazy==1.0.1.80",
-  "exonware-xwsystem[lazy]==0.9.0.38",
-  "exonware-xwaction[xw]==0.9.0.11",
-  "exonware-xwschema[xw]==0.4.0.11",
+  "exonware-xwauth[xw]==0.0.1.10",
+  "exonware-xwlazy==1.0.1.81",
+  "exonware-xwsystem[lazy]==0.9.0.39",
+  "exonware-xwaction[xw]==0.9.0.12",
+  "exonware-xwschema[xw]==0.4.0.12",
 ]
 full = [
-  "exonware-xwauth[xw]==0.0.1.9",
+  "exonware-xwauth[xw]==0.0.1.10",
   "httpx>=0.27.0",
   "signxml>=4.0.0",
   "lxml>=5.0.0",
-  "exonware-xwsystem[full]==0.9.0.38",
-  "exonware-xwaction[xw]==0.9.0.11",
-  "exonware-xwschema[xw]==0.4.0.11",
-  "exonware-xwjson[xw]==0.9.0.22",
-  "exonware-xwnode[xw]==0.9.0.24",
-  "exonware-xwdata[xw]==0.9.0.16",
-  "exonware-xwentity[xw]==0.6.0.9",
-  "exonware-xwmodels[xw]==0.6.0.12",
-  "exonware-xwquery[xw]==0.9.0.14",
-  "exonware-xwstorage[xw]==0.0.1.6",
+  "exonware-xwsystem[full]==0.9.0.39",
+  "exonware-xwaction[xw]==0.9.0.12",
+  "exonware-xwschema[xw]==0.4.0.12",
+  "exonware-xwjson[xw]==0.9.0.23",
+  "exonware-xwnode[xw]==0.9.0.25",
+  "exonware-xwdata[xw]==0.9.0.17",
+  "exonware-xwentity[xw]==0.6.0.11",
+  "exonware-xwmodels[xw]==0.6.0.13",
+  "exonware-xwquery[xw]==0.9.0.15",
+  "exonware-xwstorage[xw]==0.0.1.7",
   "redis>=4.0.0",
 ]
 # Do not install the unrelated PyPI distribution ``rpython`` in the same env: it shadows ``rply``
 # and breaks ``lxml`` / ``signxml`` (GUIDE_53 root cause).
 dev = [
-  "exonware-xwauth[full]==0.0.1.9",
+  "exonware-xwauth[full]==0.0.1.10",
   "pytest>=8.0.0",
   "pytest-asyncio>=0.21.0",
   "pytest-cov>=4.0.0",
