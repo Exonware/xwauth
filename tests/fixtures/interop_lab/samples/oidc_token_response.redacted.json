@@ -1,0 +1,16 @@
+{
+  "_interop_lab": {
+    "id": "oidc-token-response-shape-v1",
+    "protocol": "oidc",
+    "idp": "generic_rfc6749",
+    "notes": "RFC 6749-style successful token response body. All secrets replaced with REDACTED_* placeholders; id_token is not a real JWT."
+  },
+  "recorded_response_body": {
+    "access_token": "REDACTED_ACCESS_TOKEN",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "refresh_token": "REDACTED_REFRESH_TOKEN",
+    "id_token": "REDACTED_ID_TOKEN_JWT_SHAPE",
+    "scope": "openid profile email"
+  }
+}

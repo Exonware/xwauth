@@ -1,0 +1,31 @@
+{
+  "_interop_lab": {
+    "id": "scim-users-list-shape-v1",
+    "protocol": "scim",
+    "idp": "generic_rfc7644",
+    "notes": "SCIM 2.0 ListResponse for GET /Users; PII replaced with REDACTED_* placeholders."
+  },
+  "recorded_response_body": {
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+    "totalResults": 1,
+    "startIndex": 1,
+    "itemsPerPage": 1,
+    "Resources": [
+      {
+        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+        "id": "REDACTED_SCIM_USER_ID",
+        "userName": "REDACTED_USER@REDACTED.example",
+        "name": {
+          "formatted": "REDACTED_DISPLAY_NAME"
+        },
+        "active": true,
+        "meta": {
+          "resourceType": "User",
+          "created": "2026-01-01T00:00:00Z",
+          "lastModified": "2026-01-02T00:00:00Z",
+          "version": "W/\"REDACTED_ETAG_HASH\""
+        }
+      }
+    ]
+  }
+}

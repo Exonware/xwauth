@@ -1,0 +1,111 @@
+# Source size (src/*): ~991.1 KB
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "xwauth"
+dynamic = [
+    "version",
+]
+description = "Convenience wrapper for exonware-xwauth-connector==0.0.1.11 - provides 'import xwauth' alias"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "eXonware Backend Team", email = "connect@exonware.com" },
+]
+keywords = [
+    "oauth2",
+    "oidc",
+    "authentication",
+    "authorization",
+    "exonware",
+]
+classifiers = []
+dependencies = [
+    "exonware-xwauth-connector==0.0.1.11",
+]
+
+[project.license]
+text = "Apache-2.0"
+
+[project.optional-dependencies]
+# First-party XW libs composed by this package (excludes exonware-xwsystem==0.9.0.37; see lazy/full).
+xw = [
+    "exonware-xwauth-connector[xw]==0.0.1.11",
+]
+lazy = [
+    "exonware-xwauth-connector[lazy]==0.0.1.11",
+]
+full = [
+    "exonware-xwauth-connector[full]==0.0.1.11",
+]
+dev = [
+    "exonware-xwauth-connector[dev]==0.0.1.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/exonware/xwauth.connector"
+Documentation = "https://github.com/exonware/xwauth.connector/docs"
+Repository = "https://github.com/exonware/xwauth.connector"
+Issues = "https://github.com/exonware/xwauth.connector/issues"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+]
+python_classes = [
+    "Test*",
+]
+python_functions = [
+    "test_*",
+]
+asyncio_mode = "auto"
+addopts = [
+    "--tb=short",
+]
+
+[tool.hatch.version]
+path = "src/exonware/xwauth.connector/version.py"
+
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "README.md",
+    "src/xwauth_wrapper.py",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/docs/SECURITY.md",
+    "/docs/SECURITY_ADVISORIES.md",
+    "/docs/INTEGRATOR_SECURITY_CHECKLIST.md",
+    "/docs/GUIDE_03_HA_UPGRADE_RUNBOOK.md",
+    "/docs/GUIDE_04_REFERENCE_ARCHITECTURE_DIAGRAMS.md",
+    "/docs/GUIDE_05_MIGRATION_KEYCLOAK_SHAPED.md",
+    "/docs/GUIDE_06_MIGRATION_AUTH0_SHAPED.md",
+    "/docs/GUIDE_07_MIGRATION_SUPABASE_SHAPED.md",
+    "/docs/GUIDE_08_REFERENCE_SAAS_TEMPLATE_OUTLINE.md",
+    "/docs/GUIDE_09_OIDC_THIN_CLIENT_PATTERNS.md",
+    "/docs/GUIDE_10_SAML_ENTERPRISE_KIT.md",
+    "/docs/GUIDE_11_SCIM_HARDENING.md",
+    "/docs/GUIDE_12_FEDERATION_INTEROP_LAB.md",
+    "/docs/REF_33_PARTNER_INTEGRATION_MATRIX.md",
+    "/docs/REF_37_MULTI_TENANT_REFERENCE_STACK.md",
+    "/docs/REF_39_EDITION_AND_SKUS.md",
+    "/docs/REF_61_OPS_TELEMETRY_SCHEMA.md",
+    "/docs/REF_62_OPS_SLI_REGISTRY_V1.md",
+    "/docs/REF_63_AUTH_OBSERVABILITY_CONTRACT.md",
+    "/docs/REF_64_CLIENT_REGISTRY_MIGRATION_MAPPING.md",
+    "/docs/rfc/README.md",
+    "/.references/COMPETITIVE_STACK.md",
+    "/.references/ROADMAP_SCORE_20.md",
+    "/.github",
+]

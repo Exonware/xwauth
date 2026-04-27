@@ -1,0 +1,534 @@
+#!/usr/bin/env python3
+"""
+#exonware/xwauth.connector/src/exonware/xwauth.connector/providers/xwsystem_providers.py
+XWAuth Providers - Extended from xwsystem
+This module contains authentication provider implementations moved from xwsystem.security.auth.
+These implementations extend xwsystem.security.base.AAuthProvider to ensure xwauth extends xwsystem.
+Company: eXonware.com
+Author: eXonware Backend Team
+Email: connect@exonware.com
+Version: 0.0.1.11
+Generation Date: 20-Dec-2025
+"""
+
+import time
+import base64
+import hashlib
+import hmac
+import jwt
+from typing import Any, Optional
+from urllib.parse import urlencode, parse_qs
+# Import from xwsystem (xwauth extends xwsystem)
+from exonware.xwsystem.io.serialization.auto_serializer import AutoSerializer
+from exonware.xwsystem.security.base import AAuthProvider, ATokenInfo, AUserInfo
+from exonware.xwsystem.security.errors import AuthenticationError, AuthorizationError, TokenExpiredError
+from exonware.xwsystem.security.defs import OAuth2GrantType
+from exonware.xwsystem import get_logger
+from exonware.xwsystem.observability import outbound_http_timeout_tuple
+# Lazy import for requests (optional dependency - used in OAuth2Provider)
+
+def _get_requests():
+    """Lazy import requests module."""
+    try:
+        import requests
+        return requests
+    except ImportError:
+        raise ImportError(
+            "requests is required for OAuth2 authentication. "
+            "Install it with: pip install requests"
+        )
+logger = get_logger("xwauth.providers.xwsystem_providers")
+
+# Credentials field naming the upstream component that verified the subject.
+# Presence is mandatory for JWTProvider.authenticate to mint a token (see the
+# security contract in that method's docstring). The field itself is stripped
+# from the signed token payload.
+_JWT_VERIFIED_BY_FIELD = "_verified_by"
+
+_JWT_RESERVED_INPUT_CLAIMS = frozenset(
+    {
+        "sub",
+        "iss",
+        "aud",
+        "exp",
+        "iat",
+        "nbf",
+        "jti",
+        "typ",
+        "token_use",
+    }
+)
+_JWT_REFRESH_CLAIM_ALLOWLIST = frozenset(
+    {
+        "sub",
+        "username",
+        "email",
+        "roles",
+        "scope",
+        "client_id",
+        "tenant_id",
+        "session_id",
+    }
+)
+
+
+def _oauth_provider_http_timeout() -> tuple[float, float]:
+    """Token/userinfo HTTP bounds (env XWAUTH_OUTBOUND_HTTP_* or tier-agnostic defaults)."""
+    return outbound_http_timeout_tuple()
+
+
+class OAuth2Provider(AAuthProvider):
+    """OAuth2 authentication provider - extends xwsystem.security.base.AAuthProvider."""
+
+    def __init__(
+        self,
+        client_id: str,
+        client_secret: str,
+        authorization_url: str,
+        token_url: str,
+        userinfo_url: Optional[str] = None,
+        scopes: Optional[list[str]] = None
+    ):
+        """
+        Initialize OAuth2 provider.
+        Args:
+            client_id: OAuth2 client ID
+            client_secret: OAuth2 client secret
+            authorization_url: Authorization endpoint URL
+            token_url: Token endpoint URL
+            userinfo_url: Optional user info endpoint URL
+            scopes: Optional list of scopes to request
+        """
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.authorization_url = authorization_url
+        self.token_url = token_url
+        self.userinfo_url = userinfo_url
+        self.scopes = scopes or []
+
+    def get_authorization_url(self, redirect_uri: str, state: Optional[str] = None) -> str:
+        """Get authorization URL for OAuth2 flow."""
+        params = {
+            'response_type': 'code',
+            'client_id': self.client_id,
+            'redirect_uri': redirect_uri,
+            'scope': ' '.join(self.scopes)
+        }
+        if state:
+            params['state'] = state
+        return f"{self.authorization_url}?{urlencode(params)}"
+
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
+        """Authenticate using OAuth2 flow."""
+        import asyncio
+        def _authenticate():
+            grant_type = credentials.get('grant_type', OAuth2GrantType.AUTHORIZATION_CODE.value)
+            if grant_type == OAuth2GrantType.AUTHORIZATION_CODE.value:
+                return self._authenticate_authorization_code(credentials)
+            elif grant_type == OAuth2GrantType.CLIENT_CREDENTIALS.value:
+                return self._authenticate_client_credentials()
+            elif grant_type == OAuth2GrantType.RESOURCE_OWNER.value:
+                return self._authenticate_resource_owner(credentials)
+            else:
+                raise AuthenticationError(f"Unsupported grant type: {grant_type}")
+        return await asyncio.to_thread(_authenticate)
+
+    def _authenticate_authorization_code(self, credentials: dict[str, Any]) -> ATokenInfo:
+        """Authenticate using authorization code."""
+        requests = _get_requests()
+        data = {
+            'grant_type': OAuth2GrantType.AUTHORIZATION_CODE.value,
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'code': credentials['code'],
+            'redirect_uri': credentials['redirect_uri']
+        }
+        response = requests.post(self.token_url, data=data, timeout=_oauth_provider_http_timeout())
+        if response.status_code != 200:
+            raise AuthenticationError(f"OAuth2 authentication failed: {response.text}")
+        auto_serializer = AutoSerializer()
+        token_data = auto_serializer.detect_and_deserialize(response.content, format_hint='json')
+        return ATokenInfo(
+            access_token=token_data['access_token'],
+            token_type=token_data.get('token_type', 'Bearer'),
+            expires_in=token_data.get('expires_in'),
+            refresh_token=token_data.get('refresh_token'),
+            scope=token_data.get('scope')
+        )
+
+    def _authenticate_client_credentials(self) -> ATokenInfo:
+        """Authenticate using client credentials."""
+        requests = _get_requests()
+        data = {
+            'grant_type': OAuth2GrantType.CLIENT_CREDENTIALS.value,
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'scope': ' '.join(self.scopes)
+        }
+        response = requests.post(self.token_url, data=data, timeout=_oauth_provider_http_timeout())
+        if response.status_code != 200:
+            raise AuthenticationError(f"OAuth2 authentication failed: {response.text}")
+        auto_serializer = AutoSerializer()
+        token_data = auto_serializer.detect_and_deserialize(response.content, format_hint='json')
+        return ATokenInfo(
+            access_token=token_data['access_token'],
+            token_type=token_data.get('token_type', 'Bearer'),
+            expires_in=token_data.get('expires_in'),
+            scope=token_data.get('scope')
+        )
+
+    def _authenticate_resource_owner(self, credentials: dict[str, Any]) -> ATokenInfo:
+        """Authenticate using resource owner credentials."""
+        requests = _get_requests()
+        data = {
+            'grant_type': OAuth2GrantType.RESOURCE_OWNER.value,
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'username': credentials['username'],
+            'password': credentials['password'],
+            'scope': ' '.join(self.scopes)
+        }
+        response = requests.post(self.token_url, data=data, timeout=_oauth_provider_http_timeout())
+        if response.status_code != 200:
+            raise AuthenticationError(f"OAuth2 authentication failed: {response.text}")
+        auto_serializer = AutoSerializer()
+        token_data = auto_serializer.detect_and_deserialize(response.content, format_hint='json')
+        return ATokenInfo(
+            access_token=token_data['access_token'],
+            token_type=token_data.get('token_type', 'Bearer'),
+            expires_in=token_data.get('expires_in'),
+            refresh_token=token_data.get('refresh_token'),
+            scope=token_data.get('scope')
+        )
+
+    async def validate_token(self, token: str) -> AUserInfo:
+        """Validate OAuth2 token."""
+        if not self.userinfo_url:
+            raise AuthenticationError("User info URL not configured")
+        import asyncio
+        def _validate():
+            requests = _get_requests()
+            headers = {'Authorization': f'Bearer {token}'}
+            response = requests.get(
+                self.userinfo_url,
+                headers=headers,
+                timeout=_oauth_provider_http_timeout(),
+            )
+            if response.status_code == 401:
+                raise TokenExpiredError("Token expired or invalid")
+            elif response.status_code != 200:
+                raise AuthenticationError(f"Token validation failed: {response.text}")
+            auto_serializer = AutoSerializer()
+            user_data = auto_serializer.detect_and_deserialize(response.content, format_hint='json')
+            return AUserInfo(
+                user_id=user_data.get('sub', user_data.get('id', 'unknown')),
+                username=user_data.get('preferred_username', user_data.get('username')),
+                email=user_data.get('email'),
+                attributes=user_data
+            )
+        return await asyncio.to_thread(_validate)
+
+    async def refresh_token(self, refresh_token: str) -> ATokenInfo:
+        """Refresh OAuth2 token."""
+        import asyncio
+        def _refresh():
+            requests = _get_requests()
+            data = {
+                'grant_type': OAuth2GrantType.REFRESH_TOKEN.value,
+                'client_id': self.client_id,
+                'client_secret': self.client_secret,
+                'refresh_token': refresh_token
+            }
+            response = requests.post(self.token_url, data=data, timeout=_oauth_provider_http_timeout())
+            if response.status_code != 200:
+                raise AuthenticationError(f"Token refresh failed: {response.text}")
+            auto_serializer = AutoSerializer()
+            token_data = auto_serializer.detect_and_deserialize(response.content, format_hint='json')
+            return ATokenInfo(
+                access_token=token_data['access_token'],
+                token_type=token_data.get('token_type', 'Bearer'),
+                expires_in=token_data.get('expires_in'),
+                refresh_token=token_data.get('refresh_token', refresh_token),
+                scope=token_data.get('scope')
+            )
+        return await asyncio.to_thread(_refresh)
+
+
+class JWTProvider(AAuthProvider):
+    """JWT (JSON Web Token) authentication provider - extends xwsystem.security.base.AAuthProvider."""
+
+    def __init__(
+        self,
+        secret_key: str,
+        algorithm: str = "HS256",
+        issuer: Optional[str] = None,
+        audience: Optional[str] = None,
+        expiration_time: int = 3600
+    ):
+        """
+        Initialize JWT provider.
+        Args:
+            secret_key: Secret key for signing tokens
+            algorithm: JWT algorithm (HS256, RS256, etc.)
+            issuer: Token issuer
+            audience: Token audience
+            expiration_time: Token expiration time in seconds
+        """
+        self.secret_key = secret_key
+        self.algorithm = algorithm
+        self.issuer = issuer
+        self.audience = audience
+        self.expiration_time = expiration_time
+
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
+        """Issue a JWT for a subject whose identity was ALREADY VERIFIED upstream.
+
+        ⚠️ SECURITY CONTRACT
+        --------------------
+        This provider does **not** validate credentials. It signs JWTs for
+        subjects that an upstream authenticator (password backend, OIDC
+        broker, test fixture, …) has already verified. Callers MUST pass:
+
+        - ``credentials["user_id"]`` — the verified subject identifier.
+        - ``credentials["_verified_by"]`` — a non-empty string naming the
+          component that verified the subject (e.g. ``"password_backend"``,
+          ``"oidc_broker"``, ``"test_fixture"``). Used as an explicit
+          attestation that the caller did the verification work; its value
+          is logged but not emitted in the signed token.
+
+        Passing ``credentials`` without ``_verified_by`` raises
+        :class:`AuthenticationError`.
+
+        Root-cause fix (security regression 2026-04-20)
+        -----------------------------------------------
+        Earlier versions accepted ``{"user_id": anything}`` and immediately
+        minted a signed JWT — any HTTP route that exposed this method became
+        a token-forgery primitive for arbitrary subjects. The ``_verified_by``
+        gate forces callers to make an explicit claim about who did the
+        identity verification, which turns silent bypass into a loud failure.
+
+        This change is intentionally **not** backwards compatible. Pre-v1
+        callers that relied on the bypass MUST be updated to pass
+        ``_verified_by``.
+        """
+        import asyncio
+
+        def _authenticate() -> ATokenInfo:
+            user_id = credentials.get("user_id")
+            if not user_id:
+                raise AuthenticationError("user_id required for JWT authentication")
+
+            verified_by = credentials.get(_JWT_VERIFIED_BY_FIELD)
+            if not isinstance(verified_by, str) or not verified_by.strip():
+                raise AuthenticationError(
+                    "JWTProvider does not validate credentials itself. "
+                    f"Pass credentials[{_JWT_VERIFIED_BY_FIELD!r}] naming the upstream "
+                    "authenticator that verified the subject (e.g. your password "
+                    "backend, OIDC broker, or test fixture). See the "
+                    "JWTProvider.authenticate security contract for details."
+                )
+            logger.debug(
+                "JWTProvider.authenticate: user_id=%s verified_by=%s",
+                user_id,
+                verified_by,
+            )
+
+            # Never allow caller-controlled input to override reserved JWT
+            # claims, and never leak the verification marker into the token.
+            excluded = {"user_id", "password", _JWT_VERIFIED_BY_FIELD}
+            custom_claims = {
+                key: value
+                for key, value in credentials.items()
+                if key not in excluded and key not in _JWT_RESERVED_INPUT_CLAIMS
+            }
+            now = time.time()
+            payload = {
+                "sub": user_id,
+                "iat": now,
+                "exp": now + self.expiration_time,
+                # Distinguish access vs refresh for refresh_token(); callers cannot
+                # override via credentials because token_use is reserved input.
+                "token_use": "access",
+                **custom_claims,
+            }
+            if self.issuer:
+                payload["iss"] = self.issuer
+            if self.audience:
+                payload["aud"] = self.audience
+            token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
+            return ATokenInfo(
+                access_token=token,
+                token_type="Bearer",
+                expires_in=self.expiration_time,
+            )
+
+        return await asyncio.to_thread(_authenticate)
+
+    async def validate_token(self, token: str) -> AUserInfo:
+        """Validate JWT token."""
+        import asyncio
+        def _validate():
+            try:
+                payload = jwt.decode(
+                    token,
+                    self.secret_key,
+                    algorithms=[self.algorithm],
+                    issuer=self.issuer,
+                    audience=self.audience
+                )
+                return AUserInfo(
+                    user_id=payload['sub'],
+                    username=payload.get('username'),
+                    email=payload.get('email'),
+                    roles=payload.get('roles', []),
+                    attributes=payload
+                )
+            except jwt.ExpiredSignatureError:
+                raise TokenExpiredError("JWT token has expired")
+            except jwt.InvalidTokenError as e:
+                raise AuthenticationError(f"Invalid JWT token: {e}")
+        return await asyncio.to_thread(_validate)
+
+    async def refresh_token(self, refresh_token: str) -> ATokenInfo:
+        """Refresh JWT token (create new token from existing)."""
+        try:
+            # Security: refresh input must remain fully-valid and issuer/audience-bound.
+            payload = jwt.decode(
+                refresh_token,
+                self.secret_key,
+                algorithms=[self.algorithm],
+                issuer=self.issuer,
+                audience=self.audience
+            )
+            # Require a dedicated refresh token (token_use=refresh). Access
+            # tokens minted by authenticate use token_use=access; they must
+            # not be refreshable — that collapsed access/refresh semantics.
+            if payload.get("token_use") != "refresh":
+                raise AuthenticationError("Token is not eligible for refresh")
+            # Create new token with same payload but new timestamps
+            now = time.time()
+            new_payload = {
+                key: value
+                for key, value in payload.items()
+                if key in _JWT_REFRESH_CLAIM_ALLOWLIST
+            }
+            new_payload.update({
+                'iat': now,
+                'exp': now + self.expiration_time
+            })
+            if self.issuer:
+                new_payload['iss'] = self.issuer
+            if self.audience:
+                new_payload['aud'] = self.audience
+            new_token = jwt.encode(new_payload, self.secret_key, algorithm=self.algorithm)
+            return ATokenInfo(
+                access_token=new_token,
+                token_type="Bearer",
+                expires_in=self.expiration_time
+            )
+        except jwt.ExpiredSignatureError:
+            raise TokenExpiredError("Refresh token has expired")
+        except Exception as e:
+            if isinstance(e, jwt.InvalidTokenError):
+                raise AuthenticationError(f"Invalid refresh token: {e}")
+            raise
+
+
+class SAMLProvider(AAuthProvider):
+    """SAML 2.0 authentication provider (simplified implementation) - extends xwsystem.security.base.AAuthProvider."""
+
+    def __init__(
+        self,
+        idp_url: str,
+        sp_entity_id: str,
+        certificate_path: Optional[str] = None
+    ):
+        """
+        Initialize SAML provider.
+        Args:
+            idp_url: Identity Provider URL
+            sp_entity_id: Service Provider entity ID
+            certificate_path: Path to IdP certificate for validation
+        """
+        self.idp_url = idp_url
+        self.sp_entity_id = sp_entity_id
+        self.certificate_path = certificate_path
+        logger.warning("SAML provider is a simplified implementation. Use a full SAML library for production.")
+
+    async def authenticate(self, credentials: dict[str, Any]) -> ATokenInfo:
+        """Authenticate using SAML (simplified)."""
+        # This is a placeholder implementation
+        # In practice, you'd use a library like python3-saml
+        raise AuthenticationError("SAML authentication requires a full SAML library implementation")
+
+    async def validate_token(self, token: str) -> AUserInfo:
+        """Validate SAML token (simplified)."""
+        # This is a placeholder implementation
+        raise AuthenticationError("SAML token validation requires a full SAML library implementation")
+
+    async def refresh_token(self, refresh_token: str) -> ATokenInfo:
+        """SAML doesn't typically support token refresh."""
+        raise AuthenticationError("SAML does not support token refresh")
+
+    def get_login_url(self, return_url: str) -> str:
+        """Get SAML login URL."""
+        # This would generate a proper SAML AuthnRequest
+        params = {
+            'SAMLRequest': base64.b64encode(f'<saml:AuthnRequest><saml:Issuer>{self.sp_entity_id}</saml:Issuer></saml:AuthnRequest>'.encode()).decode(),
+            'RelayState': return_url
+        }
+        return f"{self.idp_url}?{urlencode(params)}"
+
+
+class EnterpriseAuth:
+    """Enterprise authentication manager - manages multiple auth providers."""
+
+    def __init__(self):
+        self._providers: dict[str, AAuthProvider] = {}
+        self._active_provider: Optional[str] = None
+
+    def add_provider(self, name: str, provider: AAuthProvider):
+        """Add authentication provider."""
+        self._providers[name] = provider
+
+    def set_active_provider(self, name: str):
+        """Set active authentication provider."""
+        if name not in self._providers:
+            raise AuthenticationError(f"Provider '{name}' not found")
+        self._active_provider = name
+
+    def get_provider(self, name: Optional[str] = None) -> AAuthProvider:
+        """Get authentication provider."""
+        if name is None:
+            name = self._active_provider
+        if name is None:
+            raise AuthenticationError("No active provider set")
+        if name not in self._providers:
+            raise AuthenticationError(f"Provider '{name}' not found")
+        return self._providers[name]
+
+    async def authenticate(self, credentials: dict[str, Any], provider: Optional[str] = None) -> ATokenInfo:
+        """Authenticate using specified or active provider."""
+        provider_instance = self.get_provider(provider)
+        return await provider_instance.authenticate(credentials)
+
+    async def validate_token(self, token: str, provider: Optional[str] = None) -> AUserInfo:
+        """Validate token using specified or active provider."""
+        provider_instance = self.get_provider(provider)
+        return await provider_instance.validate_token(token)
+
+    async def refresh_token(self, refresh_token: str, provider: Optional[str] = None) -> ATokenInfo:
+        """Refresh token using specified or active provider."""
+        provider_instance = self.get_provider(provider)
+        return await provider_instance.refresh_token(refresh_token)
+
+    def list_providers(self) -> list[str]:
+        """List available providers."""
+        return list(self._providers.keys())
+
+    def remove_provider(self, name: str):
+        """Remove authentication provider."""
+        if name in self._providers:
+            del self._providers[name]
+            if self._active_provider == name:
+                self._active_provider = None

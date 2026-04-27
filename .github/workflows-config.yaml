@@ -1,0 +1,8 @@
+projects:
+  xwauth:
+    repo: xwauth
+    package_main: exonware-xwauth-connect
+    package_wrapper: xwauth
+    python_version: "3.12"
+    has_wrapper: true
+    uses_check_versions: true
